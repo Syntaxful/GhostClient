@@ -32,12 +32,15 @@ public class Nuker extends Module {
         int r = range.getInt();
         int max = limit.getInt();
         int broken = 0;
+        double reach = range.getValue();
+        double reachSq = reach * reach;
         BlockPos playerPos = new BlockPos(mc.player.posX, mc.player.posY, mc.player.posZ);
 
         for (int x = -r; x <= r; x++) {
             for (int y = -r; y <= r; y++) {
                 for (int z = -r; z <= r; z++) {
                     BlockPos pos = playerPos.add(x, y, z);
+                    if (mc.player.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > reachSq) continue;
                     if (mc.world.isAirBlock(pos)) continue;
                     if (ignoreTileEntities.getValue() && mc.world.getTileEntity(pos) != null) continue;
                     mc.playerController.clickBlock(pos, EnumFacing.UP);

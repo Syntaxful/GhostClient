@@ -19,8 +19,7 @@ public class AntiLevitation extends Module {
         if (mc.player == null) return;
         if (mc.player.isPotionActive(net.minecraft.init.MobEffects.LEVITATION)) {
             mc.player.removeActivePotionEffect(net.minecraft.init.MobEffects.LEVITATION);
+            mc.player.motionY = 0.0;
         }
-        // Keep Y velocity locked to zero so levitation cannot float you up
-        mc.player.motionY = 0.0;
     }
 }

@@ -43,17 +43,21 @@ public class AutoArmor extends Module {
                 ItemArmor armor = (ItemArmor) stack.getItem();
                 if (armor.getEquipmentSlot() != slot) continue;
                 int tier = getArmorTier(stack);
-                if (tier > bestTier && tier > currentTier) {
+                if (tier > bestTier) {
                     bestTier = tier;
                     bestSlot = i;
                 }
             }
 
-            if (bestSlot != -1) {
+            if (bestSlot != -1 && bestTier > currentTier) {
                 int containerSlot = (bestSlot < 9) ? (bestSlot + 36) : bestSlot;
                 mc.playerController.windowClick(windowId, containerSlot, 0, ClickType.PICKUP, mc.player);
                 mc.playerController.windowClick(windowId, armorContainerSlot, 0, ClickType.PICKUP, mc.player);
-                mc.playerController.windowClick(windowId, containerSlot, 0, ClickType.PICKUP, mc.player);
+                // If there was an item in the armor slot, the second click swapped it to the cursor.
+                // Click the source slot again to return any swapped item.
+                if (currentTier > 0) {
+                    mc.playerController.windowClick(windowId, containerSlot, 0, ClickType.PICKUP, mc.player);
+                }
                 cooldown = 5;
                 return;
             }

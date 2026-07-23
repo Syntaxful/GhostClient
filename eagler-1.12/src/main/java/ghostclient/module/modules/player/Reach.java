@@ -39,7 +39,7 @@ public class Reach extends Module {
         if (!indicator.getValue() || mc.fontRendererObj == null || mc.player == null) return;
         boolean inRange = false;
         Entity target = mc.pointedEntity;
-        if (entities.getValue() && target != null && mc.player.getDistanceToEntity(target) <= reach.getValue()) {
+        if (entities.getValue() && target != null && mc.player != null && mc.player.getDistanceToEntity(target) <= reach.getValue()) {
             inRange = true;
         }
         if (!inRange && blocks.getValue() && mc.objectMouseOver != null && mc.objectMouseOver.getBlockPos() != null) {

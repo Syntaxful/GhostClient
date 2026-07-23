@@ -41,7 +41,7 @@ public class ESP extends Module {
             int color = 0;
             if (entity instanceof EntityPlayer) {
                 if (!players.getValue()) continue;
-                color = entity.getName().equals(mc.player.getName()) ? 0xFFFFFFFF : 0xFFFF5555;
+                color = 0xFFFF5555;
             } else if (entity instanceof EntityMob) {
                 if (!mobs.getValue()) continue;
                 color = 0xFFFF55FF;

@@ -22,7 +22,8 @@ public class NoFall extends Module {
 
         if (event.getPacket() instanceof CPacketPlayer) {
             CPacketPlayer packet = (CPacketPlayer) event.getPacket();
-            if (mc.player.onGround) {
+            // Spoof on-ground while falling to reset server-side fall damage accumulator.
+            if (!mc.player.onGround) {
                 setOnGround(packet, true);
             }
         }

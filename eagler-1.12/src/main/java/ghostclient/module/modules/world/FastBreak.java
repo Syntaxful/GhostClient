@@ -20,7 +20,7 @@ public class FastBreak extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.player == null || mc.world == null || !isHittingBlock()) return;
+        if (mc.player == null || mc.world == null || mc.objectMouseOver == null || !isHittingBlock()) return;
 
         BlockPos pos = mc.objectMouseOver.getBlockPos();
         EnumFacing side = mc.objectMouseOver.sideHit;

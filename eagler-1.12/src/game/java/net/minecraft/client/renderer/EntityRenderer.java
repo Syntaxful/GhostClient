@@ -68,6 +68,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.optifine.TextureUtils;
 import net.peyton.eagler.minecraft.texture.DynamicTextureLightmap;
+import ghostclient.GhostClient;
 
 public class EntityRenderer implements IResourceManagerReloadListener {
 	private static final ResourceLocation RAIN_TEXTURES = new ResourceLocation("textures/environment/rain.png");
@@ -384,7 +385,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 			float f = 70.0F;
 
 			if (useFOVSetting) {
-				f = this.mc.gameSettings.fovSetting;
+				f = GhostClient.getFovOverride(this.mc.gameSettings.fovSetting);
 				f = f * (this.fovModifierHandPrev + (this.fovModifierHand - this.fovModifierHandPrev) * partialTicks);
 			}
 
@@ -480,6 +481,7 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 			}
 		} else if (this.mc.gameSettings.thirdPersonView > 0) {
 			double d3 = (double) (this.thirdPersonDistancePrev + (4.0F - this.thirdPersonDistancePrev) * partialTicks);
+			d3 = GhostClient.getCameraClipDistance((float) d3);
 
 			if (this.mc.gameSettings.debugCamEnable) {
 				GlStateManager.translate(0.0F, 0.0F, (float) (-d3));
@@ -1676,6 +1678,12 @@ public class EntityRenderer implements IResourceManagerReloadListener {
 	 */
 	private void setupFog(int startCoords, float partialTicks) {
 		this.fogStandard = false;
+		if (GhostClient.shouldDisableFog()) {
+			GlStateManager.setFog(RealOpenGLEnums.GL_LINEAR);
+			GlStateManager.setFogStart(this.farPlaneDistance);
+			GlStateManager.setFogEnd(this.farPlaneDistance * 2.0F);
+			return;
+		}
 		Entity entity = this.mc.getRenderViewEntity();
 		EaglercraftGPU.glFog(RealOpenGLEnums.GL_FOG_COLOR, this.setFogColorBuffer(this.fogColorRed, this.fogColorGreen, this.fogColorBlue, 1.0F));
         EaglercraftGPU.glNormal3f(0.0F, -1.0F, 0.0F);

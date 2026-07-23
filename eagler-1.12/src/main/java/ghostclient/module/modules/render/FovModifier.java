@@ -20,7 +20,11 @@ public class FovModifier extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.gameSettings == null) return;
-        mc.gameSettings.fovSetting = fov.getFloat();
+        // The patched EntityRenderer#getFOVModifier reads this value directly,
+        // so we don't need to overwrite the global setting and fight with Zoom.
+    }
+
+    public float getFov() {
+        return fov.getFloat();
     }
 }

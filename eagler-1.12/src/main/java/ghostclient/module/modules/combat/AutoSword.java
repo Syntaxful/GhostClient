@@ -4,6 +4,8 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
+import ghostclient.util.ItemUtil;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
 /**
@@ -23,13 +25,13 @@ public class AutoSword extends Module {
         int bestSlot = -1;
         float bestDamage = 0;
         for (int i = 0; i < 9; i++) {
-            if (mc.player.inventory.getStackInSlot(i).getItem() instanceof ItemSword) {
-                // ItemSword damage is roughly 4 + material. We approximate by attackDamage attribute.
-                float damage = 4.0f + ((ItemSword) mc.player.inventory.getStackInSlot(i).getItem()).getDamageVsEntity();
-                if (damage > bestDamage) {
-                    bestDamage = damage;
-                    bestSlot = i;
-                }
+            ItemStack stack = mc.player.inventory.getStackInSlot(i);
+            if (ItemUtil.isEmpty(stack) || !(stack.getItem() instanceof ItemSword)) continue;
+            // ItemSword damage is roughly 4 + material. We approximate by attackDamage attribute.
+            float damage = 4.0f + ((ItemSword) stack.getItem()).getDamageVsEntity();
+            if (damage > bestDamage) {
+                bestDamage = damage;
+                bestSlot = i;
             }
         }
         if (bestSlot != -1 && mc.player.inventory.currentItem != bestSlot) {

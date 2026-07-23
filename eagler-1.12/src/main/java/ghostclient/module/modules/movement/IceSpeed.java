@@ -14,7 +14,7 @@ import net.minecraft.util.math.BlockPos;
  */
 public class IceSpeed extends Module {
 
-    private final NumberValue speed = new NumberValue("Speed", "Max ice speed (blocks per second)", 8.0, 1.0, 30.0, 0.5);
+    private final NumberValue speed = new NumberValue("Speed", "Max ice speed (blocks per second)", 8.0, 1.0, 15.0, 0.5);
 
     public IceSpeed() {
         super(Category.Movement, "IceSpeed", "Move faster on ice.");

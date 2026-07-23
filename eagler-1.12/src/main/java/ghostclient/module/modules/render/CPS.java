@@ -4,8 +4,8 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import ghostclient.event.EventHandler;
-import ghostclient.event.KeyInputEvent;
 import ghostclient.event.RenderEvent;
+import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
 import net.minecraft.client.gui.ScaledResolution;
@@ -15,34 +15,34 @@ import net.minecraft.client.gui.ScaledResolution;
  */
 public class CPS extends Module {
 
-    private final Deque<Long> leftClicks = new ArrayDeque<>();
-    private final Deque<Long> rightClicks = new ArrayDeque<>();
+    private final Deque<Integer> leftClicks = new ArrayDeque<>();
+    private final Deque<Integer> rightClicks = new ArrayDeque<>();
     private boolean leftWasDown = false;
     private boolean rightWasDown = false;
+    private int tickCounter = 0;
 
     public CPS() {
         super(Category.Render, "CPS", "Show clicks per second.");
     }
 
     @EventHandler
-    public void onTick(KeyInputEvent event) {
-        // Use key state to detect actual mouse clicks, not raw key repeats
+    public void onTick(TickEvent.Post event) {
+        if (mc.gameSettings == null) return;
+        tickCounter++;
+        boolean leftDown = mc.gameSettings.keyBindAttack.isKeyDown();
+        boolean rightDown = mc.gameSettings.keyBindUseItem.isKeyDown();
+        if (leftDown && !leftWasDown) leftClicks.addLast(tickCounter);
+        if (rightDown && !rightWasDown) rightClicks.addLast(tickCounter);
+        leftWasDown = leftDown;
+        rightWasDown = rightDown;
+
+        while (!leftClicks.isEmpty() && tickCounter - leftClicks.peekFirst() > 20) leftClicks.removeFirst();
+        while (!rightClicks.isEmpty() && tickCounter - rightClicks.peekFirst() > 20) rightClicks.removeFirst();
     }
 
     @EventHandler
     public void onRender(RenderEvent.Post event) {
         if (mc.fontRendererObj == null || mc.gameSettings == null) return;
-
-        boolean leftDown = mc.gameSettings.keyBindAttack.isKeyDown();
-        boolean rightDown = mc.gameSettings.keyBindUseItem.isKeyDown();
-        long now = System.currentTimeMillis();
-        if (leftDown && !leftWasDown) leftClicks.addLast(now);
-        if (rightDown && !rightWasDown) rightClicks.addLast(now);
-        leftWasDown = leftDown;
-        rightWasDown = rightDown;
-
-        while (!leftClicks.isEmpty() && now - leftClicks.peekFirst() > 1000L) leftClicks.removeFirst();
-        while (!rightClicks.isEmpty() && now - rightClicks.peekFirst() > 1000L) rightClicks.removeFirst();
 
         ScaledResolution sr = new ScaledResolution(mc);
         String text = "CPS: L " + leftClicks.size() + " R " + rightClicks.size();

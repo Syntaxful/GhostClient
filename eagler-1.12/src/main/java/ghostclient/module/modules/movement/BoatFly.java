@@ -26,14 +26,14 @@ public class BoatFly extends Module {
         if (mc.player == null || !(mc.player.getRidingEntity() instanceof EntityBoat)) return;
         net.minecraft.entity.Entity boat = mc.player.getRidingEntity();
 
-        double bps = speed.getValue() / 20.0;
+        double bps = Math.min(speed.getValue(), 20.0) / 20.0;
         double yawRad = Math.toRadians(mc.player.rotationYaw);
         boat.motionX = -Math.sin(yawRad) * bps;
         boat.motionZ =  Math.cos(yawRad) * bps;
-        boat.motionY = 0;
 
-        double vBps = vertical.getValue() / 20.0;
+        double vBps = Math.min(vertical.getValue(), 10.0) / 20.0;
         if (mc.gameSettings.keyBindJump.isKeyDown())  boat.motionY =  vBps;
-        if (mc.gameSettings.keyBindSneak.isKeyDown()) boat.motionY = -vBps;
+        else if (mc.gameSettings.keyBindSneak.isKeyDown()) boat.motionY = -vBps;
+        else boat.motionY = Math.max(-0.08, boat.motionY - 0.03); // gentle gravity
     }
 }

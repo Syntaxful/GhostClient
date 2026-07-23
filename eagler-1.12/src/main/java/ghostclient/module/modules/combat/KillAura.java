@@ -52,7 +52,7 @@ public class KillAura extends Module {
                 ticksSinceAttack--;
                 return;
             }
-            ticksSinceAttack = 10;
+            ticksSinceAttack = hitDelay.getValue() ? 10 : Math.max(1, 20 / cps.getInt());
         } else {
             ticksSinceAttack++;
             int interval = 20 / cps.getInt();
@@ -63,6 +63,9 @@ public class KillAura extends Module {
 
         mc.playerController.attackEntity(mc.player, target);
         mc.player.swingArm(EnumHand.MAIN_HAND);
+
+        Criticals criticals = (Criticals) GhostClient.MODULES.getByName("Criticals");
+        if (criticals != null && criticals.isEnabled()) criticals.doCritical();
 
         notifyCombatHelpers();
     }

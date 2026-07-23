@@ -16,13 +16,11 @@ public class BlockSelection extends Module {
 
     private final NumberValue width = new NumberValue("Width",  "Outline width",    2.0, 0.5, 5.0, 0.5);
     private final BooleanValue fill  = new BooleanValue("Fill",   "Fill the box",     false);
-    private final BooleanValue chroma = new BooleanValue("Chroma", "Rainbow outline",  false);
 
     public BlockSelection() {
         super(Category.Render, "BlockSelection", "Custom block selection outline.");
         addSetting(width);
         addSetting(fill);
-        addSetting(chroma);
     }
 
     @EventHandler
@@ -30,8 +28,7 @@ public class BlockSelection extends Module {
         if (mc.objectMouseOver == null || mc.objectMouseOver.getBlockPos() == null || mc.world == null) return;
         BlockPos pos = mc.objectMouseOver.getBlockPos();
         net.minecraft.util.math.AxisAlignedBB box = mc.world.getBlockState(pos).getBoundingBox(mc.world, pos).offset(pos.getX(), pos.getY(), pos.getZ());
-        int color = chroma.getValue() ? hsbToRgb((System.currentTimeMillis() % 2000) / 2000f, 1f, 1f) : 0xFFFFFFFF;
-        RenderUtils.drawBox(box, color, fill.getValue());
+        RenderUtils.drawBox(box, 0xFFFFFFFF, fill.getValue());
     }
 
     private int hsbToRgb(float h, float s, float v) {

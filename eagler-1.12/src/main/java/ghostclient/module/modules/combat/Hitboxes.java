@@ -43,8 +43,7 @@ public class Hitboxes extends Module {
             if (!entity.isEntityAlive()) continue;
             if (!(entity instanceof EntityLivingBase)) continue;
             if (playersOnly.getValue() && !(entity instanceof EntityPlayer)) continue;
-            AxisAlignedBB box = entity.getEntityBoundingBox().offset(-entity.posX, -entity.posY, -entity.posZ)
-                    .offset(entity.posX, entity.posY, entity.posZ);
+            AxisAlignedBB box = entity.getEntityBoundingBox();
             RenderUtils.drawBox(box, 0xAAFFFFFF, true);
         }
     }

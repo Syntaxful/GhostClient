@@ -30,6 +30,7 @@ public class AutoCraft extends Module {
         if (mc.player == null || mc.world == null) return;
         if (cooldown-- > 0) return;
         if (mc.player.openContainer == null || mc.player.openContainer == mc.player.inventoryContainer) return;
+        if (mc.player.openContainer.inventorySlots == null || mc.player.openContainer.inventorySlots.isEmpty()) return;
 
         String target = recipe.getValue();
 
@@ -49,7 +50,13 @@ public class AutoCraft extends Module {
 
         if (!hasIngredients(planksNeeded, sticksNeeded, diamondsNeeded, ironNeeded, cobbleNeeded, coalNeeded)) return;
 
-        // Try to click the output slot (slot 0) in a crafting table / inventory crafting GUI
+        // Only click the output slot if it actually contains the expected result
+        ItemStack output = mc.player.openContainer.getSlot(0).getStack();
+        if (ItemUtil.isEmpty(output)) return;
+        String outName = Item.REGISTRY.getNameForObject(output.getItem()).toString();
+        if (!outName.contains(outputItem)) return;
+
+        // Click the output slot (slot 0) in a crafting table / inventory crafting GUI
         try {
             mc.playerController.windowClick(mc.player.openContainer.windowId, 0, 0, ClickType.QUICK_MOVE, mc.player);
             cooldown = 5;

@@ -37,9 +37,11 @@ public class AutoTotem extends Module {
         if (cooldown > 0) { cooldown--; return; }
         if (mc.player.getHealth() > health.getValue()) return;
 
-        // Already have a totem in offhand — nothing to do
+        // Already have a totem in offhand or main hand — nothing to do
         ItemStack offhand = mc.player.getHeldItemOffhand();
         if (!ItemUtil.isEmpty(offhand) && offhand.getItem() == Items.TOTEM_OF_UNDYING) return;
+        ItemStack mainhand = mc.player.getHeldItemMainhand();
+        if (!ItemUtil.isEmpty(mainhand) && mainhand.getItem() == Items.TOTEM_OF_UNDYING) return;
 
         // Scan hotbar (inv slots 0-8) and main inventory (inv slots 9-35)
         for (int invSlot = 0; invSlot < 36; invSlot++) {

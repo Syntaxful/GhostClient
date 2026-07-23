@@ -21,7 +21,7 @@ public class AutoTool extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.player == null || mc.world == null) return;
+        if (mc.player == null || mc.world == null || mc.objectMouseOver == null) return;
         if (!isHittingBlock()) return;
 
         BlockPos pos = mc.objectMouseOver.getBlockPos();

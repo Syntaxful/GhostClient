@@ -22,9 +22,15 @@ public class Speed extends Module {
     public void onTick(TickEvent.Post event) {
         if (mc.player == null) return;
         if (mc.player.onGround && (mc.player.moveForward != 0 || mc.player.moveStrafing != 0)) {
-            double m = multiplier.getValue();
-            mc.player.motionX *= m;
-            mc.player.motionZ *= m;
+            float yaw = mc.player.rotationYaw;
+            double forward = mc.player.moveForward;
+            double strafe = mc.player.moveStrafing;
+            double speed = 0.2873 * multiplier.getValue();
+            float yawRad = (float) Math.toRadians(yaw - 90.0f);
+            double mx = Math.cos(yawRad) * speed * forward + Math.cos(yawRad + Math.PI / 2.0) * speed * strafe;
+            double mz = Math.sin(yawRad) * speed * forward + Math.sin(yawRad + Math.PI / 2.0) * speed * strafe;
+            mc.player.motionX = mx;
+            mc.player.motionZ = mz;
         }
     }
 }

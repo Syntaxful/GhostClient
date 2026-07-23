@@ -11,7 +11,7 @@ import ghostclient.setting.NumberValue;
  */
 public class HighJump extends Module {
 
-    private final NumberValue height = new NumberValue("Height", "Jump height multiplier", 2.0, 1.1, 5.0, 0.1);
+    private final NumberValue height = new NumberValue("Height", "Jump height multiplier", 2.0, 1.1, 3.0, 0.1);
     private boolean wasOnGround = true;
     private boolean jumpApplied = false;
 

@@ -14,6 +14,11 @@ public class FastPlace extends Module {
         super(Category.World, "FastPlace", "Place blocks faster.");
     }
 
+    @Override
+    public void onEnable() {
+        if (mc.player != null && mc.gameSettings != null) mc.setRightClickDelayTimer(0);
+    }
+
     @EventHandler
     public void onTick(TickEvent.Pre event) {
         if (mc.player == null || mc.world == null) return;

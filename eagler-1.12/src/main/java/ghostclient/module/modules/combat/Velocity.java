@@ -20,13 +20,16 @@ public class Velocity extends Module {
         addSetting(vertical);
     }
 
+    private int lastHurtTime = 0;
+
     @EventHandler
     public void onTick(TickEvent.Post event) {
         if (mc.player == null) return;
-        if (mc.player.hurtTime > 0 && mc.player.hurtResistantTime > 0) {
+        if (mc.player.hurtTime > 0 && mc.player.hurtTime > lastHurtTime) {
             mc.player.motionX *= horizontal.getValue() / 100.0;
             mc.player.motionZ *= horizontal.getValue() / 100.0;
             mc.player.motionY *= vertical.getValue() / 100.0;
         }
+        lastHurtTime = mc.player.hurtTime;
     }
 }

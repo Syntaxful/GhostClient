@@ -18,8 +18,8 @@ import net.minecraft.util.math.MathHelper;
  */
 public class AimAssist extends Module {
 
-    private final NumberValue range    = new NumberValue("Range",    "Target range (blocks)",        6.0,  1.0, 12.0,  0.5);
-    private final NumberValue strength = new NumberValue("Strength", "Snap strength (1-100)",       85.0,  1.0, 100.0,  1.0);
+    private final NumberValue range    = new NumberValue("Range",    "Target range (blocks)",        8.0,  1.0, 12.0,  0.5);
+    private final NumberValue strength = new NumberValue("Strength", "Snap strength (1-100)",       95.0,  1.0, 100.0,  1.0);
     private final NumberValue fov      = new NumberValue("FOV",      "Aim FOV (degrees)",          180.0,  1.0, 180.0,  1.0);
     private final BooleanValue playersOnly = new BooleanValue("PlayersOnly", "Only target players", true);
     private final ModeValue mode = new ModeValue("Mode", "Aim style", "Silent", "Silent", "Legit", "Smooth");

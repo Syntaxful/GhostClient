@@ -25,14 +25,14 @@ public class ElytraFly extends Module {
         if (mc.player == null || !mc.player.isElytraFlying()) return;
 
         // Convert bps to per-tick velocity (20 ticks/sec)
-        double bps = speed.getValue() / 20.0;
+        double bps = Math.min(speed.getValue(), 50.0) / 20.0;
         double yawRad = Math.toRadians(mc.player.rotationYaw);
         mc.player.motionX = -Math.sin(yawRad) * bps;
         mc.player.motionZ =  Math.cos(yawRad) * bps;
-        mc.player.motionY = 0;
 
-        double vBps = vertical.getValue() / 20.0;
+        double vBps = Math.min(vertical.getValue(), 20.0) / 20.0;
         if (mc.gameSettings.keyBindJump.isKeyDown())  mc.player.motionY =  vBps;
-        if (mc.gameSettings.keyBindSneak.isKeyDown()) mc.player.motionY = -vBps;
+        else if (mc.gameSettings.keyBindSneak.isKeyDown()) mc.player.motionY = -vBps;
+        else mc.player.motionY = Math.max(-0.08, mc.player.motionY - 0.03); // gentle gravity
     }
 }

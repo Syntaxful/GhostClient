@@ -302,4 +302,23 @@ public class GhostClient {
             }
         }
     }
+
+    // Vanilla render hooks for modules that need to override game state.
+    public static boolean shouldDisableFog() {
+        Module mod = MODULES.getByName("NoFog");
+        return mod != null && mod.isEnabled();
+    }
+
+    public static float getFovOverride(float original) {
+        Module mod = MODULES.getByName("FovModifier");
+        if (mod != null && mod.isEnabled()) {
+            return ((ghostclient.module.modules.render.FovModifier) mod).getFov();
+        }
+        return original;
+    }
+
+    public static float getCameraClipDistance(float original) {
+        Module mod = MODULES.getByName("CameraClip");
+        return mod != null && mod.isEnabled() ? Float.MAX_VALUE : original;
+    }
 }

@@ -20,9 +20,9 @@ public class AutoLog extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.player == null) return;
-        if (mc.player.getHealth() <= health.getValue() && mc.getConnection() != null) {
-            mc.getConnection().onDisconnect(null);
+        if (mc.player == null || mc.world == null) return;
+        if (mc.player.getHealth() <= health.getValue()) {
+            mc.world.sendQuittingDisconnectingPacket();
             setEnabled(false);
         }
     }

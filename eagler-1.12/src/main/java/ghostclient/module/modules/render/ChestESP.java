@@ -22,7 +22,8 @@ public class ChestESP extends Module {
 
     @EventHandler
     public void onRender(RenderEvent.Post event) {
-        if (mc.world == null || mc.getRenderManager() == null) return;
+        if (mc.world == null || mc.getRenderManager() == null || mc.player == null) return;
+        double maxSq = 64.0 * 64.0;
         for (net.minecraft.tileentity.TileEntity tile : mc.world.loadedTileEntityList) {
             int color = 0;
             if (tile instanceof TileEntityChest)          color = 0xFFFFFF00;
@@ -31,6 +32,7 @@ public class ChestESP extends Module {
             else continue;
 
             BlockPos pos = tile.getPos();
+            if (mc.player.getDistanceSq(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > maxSq) continue;
             AxisAlignedBB box = new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
             RenderUtils.drawBox(box, color, true);
         }

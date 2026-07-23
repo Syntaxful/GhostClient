@@ -15,9 +15,40 @@ import java.util.List;
  * GhostClient rendering utility.
  */
 public class RenderUtils {
-    public static void renderTracer(double x, double y, double z, int color) {}
 
     private static final Minecraft mc = Minecraft.getMinecraft();
+
+    public static void renderTracer(double x, double y, double z, int color) {
+        if (mc.getRenderManager() == null || mc.player == null) return;
+        Vec3d playerPos = new Vec3d(mc.player.posX, mc.player.posY + mc.player.getEyeHeight(), mc.player.posZ);
+        Vec3d targetPos = new Vec3d(x, y, z);
+        Vec3d renderStart = getRenderPos(playerPos.xCoord, playerPos.yCoord, playerPos.zCoord);
+        Vec3d renderEnd = getRenderPos(targetPos.xCoord, targetPos.yCoord, targetPos.zCoord);
+        drawLine3D(renderStart.xCoord, renderStart.yCoord, renderStart.zCoord,
+                   renderEnd.xCoord, renderEnd.yCoord, renderEnd.zCoord, color, 1.5f);
+    }
+
+    public static void drawLine3D(double x1, double y1, double z1, double x2, double y2, double z2, int color, float width) {
+        glColor(color);
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableDepth();
+        net.lax1dude.eaglercraft.opengl.EaglercraftGPU.glLineWidth(width);
+        GlStateManager.tryBlendFuncSeparate(RealOpenGLEnums.GL_SRC_ALPHA, RealOpenGLEnums.GL_ONE_MINUS_SRC_ALPHA,
+                RealOpenGLEnums.GL_ONE, RealOpenGLEnums.GL_ZERO);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer buffer = tessellator.getBuffer();
+        buffer.begin(1, DefaultVertexFormats.POSITION);
+        buffer.pos(x1, y1, z1).endVertex();
+        buffer.pos(x2, y2, z2).endVertex();
+        tessellator.draw();
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    }
 
     public static void glColor(int color) {
         float a = ((color >> 24) & 0xFF) / 255.0F;

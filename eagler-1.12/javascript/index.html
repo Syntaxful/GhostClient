@@ -15,6 +15,29 @@
 		<script type="text/javascript">
 			"use strict";
 			window.addEventListener("load", function() {
+				var splash = document.createElement("div");
+				splash.id = "_gc_splash";
+				splash.style.width = "100%";
+				splash.style.height = "100%";
+				splash.style.display = "flex";
+				splash.style.alignItems = "center";
+				splash.style.justifyContent = "center";
+				splash.style.flexDirection = "column";
+				splash.style.backgroundColor = "#000000";
+				splash.style.color = "#FFFFFF";
+				splash.style.fontFamily = "sans-serif";
+				splash.innerHTML = "<h1 style='margin:0;font-size:48px;letter-spacing:2px;'>GhostClient</h1><p style='margin:8px 0 24px;color:#AAAAAA;'>made by Syntaxful</p><div style='width:40px;height:40px;border:3px solid #333;border-top:3px solid #FFF;border-radius:50%;animation:spin 1s linear infinite;'></div><p id='_gc_status' style='margin-top:24px;color:#AAAAAA;font-size:14px;'>Loading...</p>";
+				document.body.appendChild(splash);
+
+				var spin = document.createElement("style");
+				spin.innerHTML = "@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}";
+				document.head.appendChild(spin);
+
+				function setStatus(text) {
+					var s = document.getElementById("_gc_status");
+					if (s) s.textContent = text;
+				}
+
 				var relayId = Math.floor(Math.random() * 3);
 				window.eaglercraftXOpts = {
 					demoMode: false,
@@ -25,7 +48,17 @@
 					logInvalidCerts: true,
 					crashOnUncaughtExceptions: true
 				};
-				main();
+				setStatus("Starting GhostClient...");
+				try {
+					main();
+					setTimeout(function() {
+						var s = document.getElementById("_gc_splash");
+						if (s) s.parentNode.removeChild(s);
+					}, 1500);
+				} catch (ex) {
+					setStatus("Failed to start: " + ex.message);
+					console.error(ex);
+				}
 			});
 		</script>
 	</head>
