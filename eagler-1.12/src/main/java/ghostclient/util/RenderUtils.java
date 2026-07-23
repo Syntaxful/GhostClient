@@ -15,7 +15,6 @@ import net.minecraft.util.math.Vec3d;
 public class RenderUtils {
     public static void renderTracer(double x, double y, double z, int color) {}
 
-
     private static final Minecraft mc = Minecraft.getMinecraft();
 
     public static void glColor(int color) {
@@ -63,6 +62,30 @@ public class RenderUtils {
         buffer.begin(1, DefaultVertexFormats.POSITION);
         buffer.pos(x1, y1, 0).endVertex();
         buffer.pos(x2, y2, 0).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+    }
+
+    public static void drawCircle(int cx, int cy, double radius, int color, int segments) {
+        glColor(color);
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(RealOpenGLEnums.GL_SRC_ALPHA, RealOpenGLEnums.GL_ONE_MINUS_SRC_ALPHA,
+                RealOpenGLEnums.GL_ONE, RealOpenGLEnums.GL_ZERO);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer buffer = tessellator.getBuffer();
+        buffer.begin(6, DefaultVertexFormats.POSITION);
+        buffer.pos(cx, cy, 0).endVertex();
+        for (int i = 0; i <= segments; i++) {
+            double angle = 2.0 * Math.PI * i / segments;
+            double x = cx + Math.cos(angle) * radius;
+            double y = cy + Math.sin(angle) * radius;
+            buffer.pos(x, y, 0).endVertex();
+        }
         tessellator.draw();
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();

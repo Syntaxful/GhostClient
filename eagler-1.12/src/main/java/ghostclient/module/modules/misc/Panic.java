@@ -7,13 +7,14 @@ import ghostclient.module.Category;
 import ghostclient.module.Module;
 
 /**
- * Disables all modules instantly.
+ * Disables all modules instantly. Hidden from the module list.
  */
 public class Panic extends Module {
 
     public Panic() {
         super(Category.Misc, "Panic", "Disable all modules.");
         setKeybind(25); // P
+        setHidden(true);
     }
 
     @EventHandler

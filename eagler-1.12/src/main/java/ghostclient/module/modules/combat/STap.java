@@ -8,25 +8,25 @@ import ghostclient.module.Module;
 import ghostclient.setting.NumberValue;
 
 /**
- * Automatically W-taps to reset sprint when hitting an entity.
+ * Automatically S-taps to reset sprint when hitting an entity.
  */
-public class AutoWtap extends Module {
+public class STap extends Module {
 
     private final NumberValue release = new NumberValue("Release Ticks", "How long to stop holding W", 2, 1, 8, 1);
     private final NumberValue hold = new NumberValue("Hold Ticks", "How long to hold W after release", 2, 1, 8, 1);
     private int releaseTicks = 0;
     private int holdTicks = 0;
 
-    public AutoWtap() {
-        super(Category.Combat, "WTap", "Auto W-tap on hit.");
+    public STap() {
+        super(Category.Combat, "STap", "Auto S-tap on hit.");
         addSetting(release);
         addSetting(hold);
     }
 
     @Override
     public void onEnable() {
-        Module stap = GhostClient.MODULES.getByName("STap");
-        if (stap != null && stap.isEnabled()) stap.setEnabled(false);
+        Module wtap = GhostClient.MODULES.getByName("WTap");
+        if (wtap != null && wtap.isEnabled()) wtap.setEnabled(false);
     }
 
     @EventHandler

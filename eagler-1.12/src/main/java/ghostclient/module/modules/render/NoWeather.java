@@ -1,5 +1,7 @@
 package ghostclient.module.modules.render;
 
+import ghostclient.event.EventHandler;
+import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
 
@@ -12,8 +14,15 @@ public class NoWeather extends Module {
         super(Category.Render, "NoWeather", "Disables rain and snow.");
     }
 
-    @Override
-    public void onEnable() {
-        if (mc.world != null) mc.world.setRainStrength(0);
+    @EventHandler
+    public void onTick(TickEvent.Post event) {
+        if (mc.world != null) {
+            mc.world.setRainStrength(0);
+            mc.world.setThunderStrength(0);
+        }
+    }
+
+    public boolean shouldDisableWeather() {
+        return isEnabled();
     }
 }

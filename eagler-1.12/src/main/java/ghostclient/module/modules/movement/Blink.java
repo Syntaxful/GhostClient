@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ghostclient.event.EventHandler;
+import ghostclient.event.PacketEvent;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
@@ -35,7 +36,18 @@ public class Blink extends Module {
     }
 
     @EventHandler
+    public void onPacketSend(PacketEvent.Send event) {
+        if (event.getPacket() instanceof CPacketPlayer) {
+            packets.add(event.getPacket());
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
     public void onTick(TickEvent.Post event) {
-        // TODO: intercept CPacketPlayer via PacketEvent and queue them here
+        // Optional: auto-release after too many queued packets to avoid kicks
+        if (packets.size() > 100) {
+            setEnabled(false);
+        }
     }
 }

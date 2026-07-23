@@ -26,12 +26,13 @@ import net.minecraft.client.gui.ScaledResolution;
  * - category tabs, search, expandable settings
  * - visual keybind selector keyboard
  * - remembers last selected category
+ * - transparent panel so the game stays visible
  */
 public class ClickGUI extends GuiScreen {
 
     private static Category selectedCategory = Category.Combat;
-    private static String backgroundMode = "None";
-    private static final String[] BACKGROUND_MODES = { "None", "Stars", "Warp" };
+    private static String backgroundMode = "Stars";
+    private static final String[] BACKGROUND_MODES = { "None", "Stars", "Warp", "Nebula", "Galaxy", "Constellations", "Void", "Snow" };
     private String searchQuery = "";
     private Module expandedModule = null;
     private Module bindingModule = null;
@@ -44,9 +45,9 @@ public class ClickGUI extends GuiScreen {
     private int moduleRowH = 24;
     private int settingH = 22;
 
-    private final int COL_BG = 0xFF000000;
-    private final int COL_PANEL = 0xFF0E0E0E;
-    private final int COL_PANEL_LIGHT = 0xFF181818;
+    private final int COL_BG = 0x88000000;
+    private final int COL_PANEL = 0xAA0E0E0E;
+    private final int COL_PANEL_LIGHT = 0xBB181818;
     private final int COL_BORDER = 0xFF2A2A2A;
     private final int COL_WHITE = 0xFFFFFFFF;
     private final int COL_GRAY = 0xFFAAAAAA;
@@ -75,7 +76,7 @@ public class ClickGUI extends GuiScreen {
                 return;
             }
         }
-        backgroundMode = "None";
+        backgroundMode = "Stars";
     }
 
     private static final String[][] KEYBOARD_ROWS = {
@@ -113,7 +114,7 @@ public class ClickGUI extends GuiScreen {
     }
 
     private void drawPanel(int mouseX, int mouseY, float partialTicks) {
-        // Panel background with subtle border
+        // Transparent panel background so the game stays visible behind it
         RenderUtils.drawRect(panelX, panelY, panelW, panelH, COL_PANEL);
         RenderUtils.drawBorderedRect(panelX + 1, panelY + 1, panelW - 2, panelH - 2, COL_PANEL, COL_BORDER, 1);
 
@@ -123,9 +124,9 @@ public class ClickGUI extends GuiScreen {
         drawString(fontRendererObj, "made by Syntaxful", panelX + panelW - 110, panelY + 10, COL_GRAY);
 
         // Background mode button
-        int bgW = 60;
+        int bgW = 90;
         int bgH = 18;
-        int bgX = panelX + panelW - 140 - bgW - 12;
+        int bgX = panelX + panelW - 170 - bgW - 12;
         int bgY = panelY + 5;
         RenderUtils.drawRect(bgX, bgY, bgW, bgH, COL_BG);
         RenderUtils.drawBorderedRect(bgX + 1, bgY + 1, bgW - 2, bgH - 2, COL_BG, COL_BORDER, 1);
@@ -362,9 +363,9 @@ public class ClickGUI extends GuiScreen {
         }
 
         // Background mode button
-        int bgW = 60;
+        int bgW = 90;
         int bgH = 18;
-        int bgX = panelX + panelW - 140 - bgW - 12;
+        int bgX = panelX + panelW - 170 - bgW - 12;
         int bgY = panelY + 5;
         if (mouseX >= bgX && mouseX <= bgX + bgW && mouseY >= bgY && mouseY <= bgY + bgH) {
             cycleBackgroundMode();

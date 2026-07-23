@@ -4,9 +4,11 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 /**
- * Breaks blocks faster by clearing the click delay.
+ * Breaks the current block faster by repeatedly clicking it.
  */
 public class FastBreak extends Module {
 
@@ -16,6 +18,21 @@ public class FastBreak extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        // removed due to private API
+        if (mc.player == null || mc.world == null) return;
+        if (isHittingBlock()) {
+            BlockPos pos = mc.objectMouseOver.getBlockPos();
+            EnumFacing side = mc.objectMouseOver.sideHit;
+            if (pos != null && side != null) {
+                mc.playerController.clickBlock(pos, side);
+            }
+        }
+    }
+
+    private boolean isHittingBlock() {
+        try {
+            return mc.playerController.getIsHittingBlock();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

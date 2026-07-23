@@ -5,6 +5,9 @@ import ghostclient.event.PacketEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
 import ghostclient.setting.ModeValue;
+import net.minecraft.network.play.client.CPacketChatMessage;
+import net.minecraft.network.play.client.CPacketPlayer;
+import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 
 /**
  * Cancels selected packets.
@@ -20,6 +23,13 @@ public class PacketCanceller extends Module {
 
     @EventHandler
     public void onPacket(PacketEvent.Send event) {
-        // TODO: cancel based on packet type
+        String t = type.getValue();
+        if ("Movement".equals(t) && event.getPacket() instanceof CPacketPlayer) {
+            event.setCancelled(true);
+        } else if ("Chat".equals(t) && event.getPacket() instanceof CPacketChatMessage) {
+            event.setCancelled(true);
+        } else if ("Use".equals(t) && event.getPacket() instanceof CPacketPlayerTryUseItem) {
+            event.setCancelled(true);
+        }
     }
 }

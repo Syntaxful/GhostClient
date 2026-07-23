@@ -18,8 +18,11 @@ public class SafeWalk extends Module {
     @EventHandler
     public void onTick(TickEvent.Post event) {
         if (mc.player == null || !mc.player.onGround) return;
+        if (Math.abs(mc.player.motionX) < 0.01 && Math.abs(mc.player.motionZ) < 0.01) return;
+
         BlockPos ahead = new BlockPos(mc.player.posX + mc.player.motionX, mc.player.posY - 1, mc.player.posZ + mc.player.motionZ);
-        if (mc.world.isAirBlock(ahead)) {
+        BlockPos ahead2 = new BlockPos(mc.player.posX + mc.player.motionX * 2, mc.player.posY - 1, mc.player.posZ + mc.player.motionZ * 2);
+        if (mc.world.isAirBlock(ahead) && mc.world.isAirBlock(ahead2)) {
             mc.player.motionX = 0;
             mc.player.motionZ = 0;
         }

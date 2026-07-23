@@ -11,7 +11,7 @@ import ghostclient.setting.NumberValue;
  */
 public class Step extends Module {
 
-    private final NumberValue height = new NumberValue("Height", "Maximum step height", 1.5, 0.5, 3.0, 0.1);
+    private final NumberValue height = new NumberValue("Height", "Maximum step height", 1.0, 0.5, 3.0, 0.1);
 
     public Step() {
         super(Category.Movement, "Step", "Automatically step up blocks.");

@@ -12,6 +12,7 @@ import net.minecraft.item.ItemFishingRod;
 public class AutoFish extends Module {
 
     private int recastTicks = 0;
+    private boolean pulling = false;
 
     public AutoFish() {
         super(Category.Player, "AutoFish", "Auto fish for you.");
@@ -19,16 +20,29 @@ public class AutoFish extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.player == null || !(mc.player.getHeldItemMainhand().getItem() instanceof ItemFishingRod)) return;
-        if (mc.player.fishEntity != null && mc.player.fishEntity.motionY < 0) {
-            // removed reflection call to private rightClickMouse
-            recastTicks = 20;
+        if (mc.player == null || mc.player.getHeldItemMainhand() == null || !(mc.player.getHeldItemMainhand().getItem() instanceof ItemFishingRod)) return;
+        if (mc.player.fishEntity != null && mc.player.fishEntity.motionY < 0 && !pulling) {
+            pulling = true;
+            rightClick();
+            recastTicks = 25;
         }
         if (recastTicks > 0) {
             recastTicks--;
             if (recastTicks == 0) {
-                // removed reflection call to private rightClickMouse
+                rightClick();
+                pulling = false;
             }
+        }
+    }
+
+    private void rightClick() {
+        try {
+            java.lang.reflect.Method m = mc.getClass().getDeclaredMethod("rightClickMouse");
+            m.setAccessible(true);
+            m.invoke(mc);
+        } catch (Exception e) {
+            // Fallback: use item via controller if reflection fails
+            mc.playerController.processRightClick(mc.player, mc.world, net.minecraft.util.EnumHand.MAIN_HAND);
         }
     }
 }

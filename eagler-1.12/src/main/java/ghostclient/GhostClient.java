@@ -25,6 +25,10 @@ import ghostclient.module.modules.combat.Surround;
 import ghostclient.module.modules.combat.TriggerBot;
 import ghostclient.module.modules.combat.Velocity;
 import ghostclient.module.modules.combat.AutoWtap;
+import ghostclient.module.modules.combat.STap;
+import ghostclient.module.modules.combat.ComboEscaper;
+import ghostclient.module.modules.combat.AutoSway;
+import ghostclient.module.modules.combat.AutoComboJump;
 import ghostclient.module.modules.misc.AntiPacketKick;
 import ghostclient.module.modules.misc.NoAnimations;
 import ghostclient.module.modules.misc.AutoCraft;
@@ -70,11 +74,11 @@ import ghostclient.module.modules.player.SpeedMine;
 import ghostclient.module.modules.render.AntiBlind;
 import ghostclient.module.modules.render.Armour;
 import ghostclient.module.modules.render.BlockSelection;
-import ghostclient.module.modules.render.CPS;
 import ghostclient.module.modules.render.Breadcrumbs;
 import ghostclient.module.modules.render.CameraClip;
 import ghostclient.module.modules.render.ChestESP;
 import ghostclient.module.modules.render.Coordinates;
+import ghostclient.module.modules.render.CPS;
 import ghostclient.module.modules.render.ESP;
 import ghostclient.module.modules.render.FPS;
 import ghostclient.module.modules.render.FovModifier;
@@ -149,7 +153,7 @@ public class GhostClient {
     }
 
     private static void registerModules() {
-        // Combat (16)
+        // Combat (20)
         MODULES.register(new AimAssist());
         MODULES.register(new AutoLog());
         MODULES.register(new AutoArmor());
@@ -167,6 +171,10 @@ public class GhostClient {
         MODULES.register(new TriggerBot());
         MODULES.register(new Velocity());
         MODULES.register(new AutoWtap());
+        MODULES.register(new STap());
+        MODULES.register(new ComboEscaper());
+        MODULES.register(new AutoSway());
+        MODULES.register(new AutoComboJump());
 
         // Movement (20)
         MODULES.register(new AirJump());

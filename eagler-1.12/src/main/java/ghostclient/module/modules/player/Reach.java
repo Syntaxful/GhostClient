@@ -10,22 +10,32 @@ import ghostclient.setting.NumberValue;
  */
 public class Reach extends Module {
 
-    private final NumberValue reach = new NumberValue("Reach", "Extra reach distance", 3.5, 3.0, 6.0, 0.1);
+    private final NumberValue reach = new NumberValue("Reach", "Extra reach distance", 3.5, 1.0, 12.0, 0.1);
     private final BooleanValue blocks = new BooleanValue("Blocks", "Extend block reach", true);
     private final BooleanValue entities = new BooleanValue("Entities", "Extend entity reach", true);
+    private final BooleanValue indicator = new BooleanValue("Indicator", "Show when target is within reach", true);
 
     public Reach() {
         super(Category.Player, "Reach", "Increase reach distance.");
         addSetting(reach);
         addSetting(blocks);
         addSetting(entities);
+        addSetting(indicator);
     }
 
-    @Override
-    public void onEnable() {
+    public double getReach() {
+        return isEnabled() ? reach.getValue() : 3.0;
     }
 
-    @Override
-    public void onDisable() {
+    public boolean extendBlocks() {
+        return isEnabled() && blocks.getValue();
+    }
+
+    public boolean extendEntities() {
+        return isEnabled() && entities.getValue();
+    }
+
+    public boolean showIndicator() {
+        return isEnabled() && indicator.getValue();
     }
 }

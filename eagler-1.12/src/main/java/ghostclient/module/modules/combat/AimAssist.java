@@ -4,23 +4,26 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
+import ghostclient.setting.ModeValue;
 import ghostclient.setting.NumberValue;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * Smoothly aims at the closest entity.
+ * Strongly pulls crosshair toward the closest target.
  */
 public class AimAssist extends Module {
 
-    private final NumberValue range = new NumberValue("Range", "Aim range", 4.0, 1.0, 8.0, 0.1);
-    private final NumberValue speed = new NumberValue("Speed", "Aim snap strength (1.0 = slow, 10.0 = instant)", 5.0, 0.1, 20.0, 0.1);
+    private final NumberValue range = new NumberValue("Range", "Aim range", 4.5, 1.0, 12.0, 0.1);
+    private final NumberValue strength = new NumberValue("Strength", "Aim snap strength (max = very strong)", 100.0, 1.0, 100.0, 1.0);
+    private final ModeValue mode = new ModeValue("Mode", "Aim style", "Silent", "Silent", "Legit", "Smooth");
 
     public AimAssist() {
-        super(Category.Combat, "AimAssist", "Smoothly aim at nearby entities.");
+        super(Category.Combat, "AimAssist", "Strongly aim at nearby entities.");
         addSetting(range);
-        addSetting(speed);
+        addSetting(strength);
+        addSetting(mode);
     }
 
     @EventHandler
@@ -36,8 +39,16 @@ public class AimAssist extends Module {
         float yaw = (float) (Math.toDegrees(Math.atan2(dz, dx)) - 90.0);
         float pitch = (float) -Math.toDegrees(Math.atan2(dy, Math.sqrt(dx * dx + dz * dz)));
 
-        mc.player.rotationYaw = MathHelper.clamp(lerpAngle(mc.player.rotationYaw, yaw, speed.getFloat()), -180, 180);
-        mc.player.rotationPitch = MathHelper.clamp(lerp(mc.player.rotationPitch, pitch, speed.getFloat()), -90, 90);
+        float factor = strength.getFloat() / 100.0f;
+        if ("Legit".equals(mode.getValue())) {
+            factor *= 0.12f;
+        } else if ("Smooth".equals(mode.getValue())) {
+            factor *= 0.25f;
+        }
+        factor = Math.min(factor, 1.0f);
+
+        mc.player.rotationYaw = MathHelper.clamp(lerpAngle(mc.player.rotationYaw, yaw, factor), -180, 180);
+        mc.player.rotationPitch = MathHelper.clamp(lerp(mc.player.rotationPitch, pitch, factor), -90, 90);
     }
 
     private Entity findTarget() {

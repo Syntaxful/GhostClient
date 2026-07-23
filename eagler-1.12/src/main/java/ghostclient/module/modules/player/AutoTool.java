@@ -19,6 +19,34 @@ public class AutoTool extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        // removed due to private API
+        if (mc.player == null || mc.world == null) return;
+        if (!isHittingBlock()) return;
+        BlockPos pos = mc.objectMouseOver.getBlockPos();
+        if (pos == null) return;
+        IBlockState state = mc.world.getBlockState(pos);
+        if (state == null) return;
+
+        int bestSlot = -1;
+        float bestSpeed = 1.0f;
+        for (int i = 0; i < 9; i++) {
+            ItemStack stack = mc.player.inventory.getStackInSlot(i);
+            if (stack == null) continue;
+            float speed = stack.getStrVsBlock(state);
+            if (speed > bestSpeed) {
+                bestSpeed = speed;
+                bestSlot = i;
+            }
+        }
+        if (bestSlot != -1 && mc.player.inventory.currentItem != bestSlot) {
+            mc.player.inventory.currentItem = bestSlot;
+        }
+    }
+
+    private boolean isHittingBlock() {
+        try {
+            return mc.playerController.getIsHittingBlock();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

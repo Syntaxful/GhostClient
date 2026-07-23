@@ -4,6 +4,7 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
+import net.lax1dude.eaglercraft.Display;
 
 /**
  * Custom window title.
@@ -16,6 +17,10 @@ public class WindowTitle extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        // TODO: set Display.setTitle("GhostClient | " + VERSION)
+        try {
+            Display.setTitle("GhostClient | Eagler 1.12");
+        } catch (Exception ignored) {
+            // Eagler may not expose Display directly; title is handled by the web wrapper.
+        }
     }
 }

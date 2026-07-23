@@ -4,6 +4,8 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
+import ghostclient.setting.BooleanValue;
+import ghostclient.setting.ModeValue;
 import ghostclient.setting.NumberValue;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,36 +14,51 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * Automatically attacks nearby entities.
+ * Automatically attacks nearby entities. Supports 1.8 spam and 1.9+ timed attack modes.
  */
 public class KillAura extends Module {
 
-    private final NumberValue range = new NumberValue("Range", "Attack range", 4.5, 1.0, 6.0, 0.1);
-    private final NumberValue aps = new NumberValue("APS", "Attacks per second", 10, 1, 20, 1);
+    private final NumberValue range = new NumberValue("Range", "Attack range", 4.5, 1.0, 12.0, 0.1);
+    private final NumberValue cps = new NumberValue("CPS", "Attacks per second (spam mode)", 12, 1, 20, 1);
     private final NumberValue fov = new NumberValue("FOV", "Attack field of view", 180, 1, 180, 1);
-    private final ghostclient.setting.BooleanValue playersOnly = new ghostclient.setting.BooleanValue("PlayersOnly", "Only attack players", true);
+    private final BooleanValue playersOnly = new BooleanValue("PlayersOnly", "Only attack players", true);
+    private final ModeValue attackMode = new ModeValue("Attack Mode", "1.8 spam or 1.9+ timed hits", "Spam", "Spam", "Timed");
+    private final BooleanValue hitDelay = new BooleanValue("Hit Delay", "Respect attack cooldown in timed mode", true);
     private int ticksSinceAttack = 0;
 
     public KillAura() {
         super(Category.Combat, "KillAura", "Automatically attacks nearby entities.");
         addSetting(range);
-        addSetting(aps);
+        addSetting(cps);
         addSetting(fov);
         addSetting(playersOnly);
+        addSetting(attackMode);
+        addSetting(hitDelay);
     }
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
         if (mc.player == null || mc.world == null) return;
-        ticksSinceAttack++;
-        int interval = 20 / aps.getInt();
-        if (interval < 1) interval = 1;
-        if (ticksSinceAttack < interval) return;
 
         Entity target = findTarget();
         if (target == null) return;
 
-        ticksSinceAttack = 0;
+        boolean timed = "Timed".equals(attackMode.getValue());
+        if (timed) {
+            if (hitDelay.getValue() && mc.player.getCooledAttackStrength(0.0f) < 1.0f) return;
+            if (ticksSinceAttack > 0) {
+                ticksSinceAttack--;
+                return;
+            }
+            ticksSinceAttack = 10;
+        } else {
+            ticksSinceAttack++;
+            int interval = 20 / cps.getInt();
+            if (interval < 1) interval = 1;
+            if (ticksSinceAttack < interval) return;
+            ticksSinceAttack = 0;
+        }
+
         mc.playerController.attackEntity(mc.player, target);
         mc.player.swingArm(EnumHand.MAIN_HAND);
     }

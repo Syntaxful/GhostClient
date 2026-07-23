@@ -5,6 +5,9 @@ import ghostclient.event.RenderEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
 
+/**
+ * Disables fog rendering.
+ */
 public class NoFog extends Module {
 
     public NoFog() {
@@ -15,7 +18,10 @@ public class NoFog extends Module {
     public void onRender(RenderEvent.Post event) {
         if (mc.entityRenderer != null) {
             mc.entityRenderer.fogStandard = false;
-            // TODO: Hook fog state more directly if needed.
         }
+    }
+
+    public boolean shouldDisableFog() {
+        return isEnabled();
     }
 }
