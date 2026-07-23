@@ -2,9 +2,10 @@
 
 A performance-first, utility, and combat client for **Eaglercraft 1.12.2** — the GhostClient 1.12 release.
 
-Built directly on top of the Eaglercraft 1.12.2 source with a custom `ghostclient` package, event bus, and module system. The design is black, white, and purple around the GhostClient ghost logo.
+Built directly on top of the Eaglercraft 1.12.2 source.
 
 **Maintained by Syntaxful.**
+<img width="224" height="224" alt="a6b06022-f3d6-446b-9e96-f98b85455b20" src="https://github.com/user-attachments/assets/a3d4dc0b-89de-4d74-8976-d724bd22c563" />
 
 ---
 
