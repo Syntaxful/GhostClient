@@ -6,7 +6,7 @@ import ghostclient.module.Category;
 import ghostclient.module.Module;
 
 /**
- * Auto respawn after death.
+ * Automatically respawns the player after death.
  */
 public class AutoRespawn extends Module {
 
@@ -16,9 +16,9 @@ public class AutoRespawn extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.player != null && !mc.player.isEntityAlive() && mc.currentScreen instanceof net.minecraft.client.gui.GuiGameOver) {
+        if (mc.player == null) return;
+        if (!mc.player.isEntityAlive()) {
             mc.player.respawnPlayer();
-            mc.displayGuiScreen(null);
         }
     }
 }

@@ -1,5 +1,6 @@
 package ghostclient.module.modules.combat;
 
+import ghostclient.GhostClient;
 import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
@@ -15,6 +16,7 @@ import net.minecraft.util.math.MathHelper;
 
 /**
  * Automatically attacks nearby entities. Supports 1.8 spam and 1.9+ timed attack modes.
+ * Also notifies WTap / STap / AutoComboJump on successful attacks.
  */
 public class KillAura extends Module {
 
@@ -22,7 +24,7 @@ public class KillAura extends Module {
     private final NumberValue cps = new NumberValue("CPS", "Attacks per second (spam mode)", 12, 1, 20, 1);
     private final NumberValue fov = new NumberValue("FOV", "Attack field of view", 180, 1, 180, 1);
     private final BooleanValue playersOnly = new BooleanValue("PlayersOnly", "Only attack players", true);
-    private final ModeValue attackMode = new ModeValue("Attack Mode", "1.8 spam or 1.9+ timed hits", "Spam", "Spam", "Timed");
+    private final ModeValue attackMode = new ModeValue("Attack Mode", "1.8 spam or 1.9+ timed", "Spam", "Spam", "Timed");
     private final BooleanValue hitDelay = new BooleanValue("Hit Delay", "Respect attack cooldown in timed mode", true);
     private int ticksSinceAttack = 0;
 
@@ -61,6 +63,8 @@ public class KillAura extends Module {
 
         mc.playerController.attackEntity(mc.player, target);
         mc.player.swingArm(EnumHand.MAIN_HAND);
+
+        notifyCombatHelpers();
     }
 
     private Entity findTarget() {
@@ -89,5 +93,16 @@ public class KillAura extends Module {
         while (angle < -180) angle += 360;
         while (angle > 180) angle -= 360;
         return Math.abs(angle) <= fov.getValue() / 2.0;
+    }
+
+    private void notifyCombatHelpers() {
+        try {
+            AutoWtap wtap = (AutoWtap) GhostClient.MODULES.getByName("WTap");
+            if (wtap != null) wtap.onAttack();
+        } catch (Exception ignored) {}
+        try {
+            STap stap = (STap) GhostClient.MODULES.getByName("STap");
+            if (stap != null) stap.onAttack();
+        } catch (Exception ignored) {}
     }
 }

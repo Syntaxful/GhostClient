@@ -6,7 +6,7 @@ import ghostclient.module.Category;
 import ghostclient.module.Module;
 
 /**
- * Automatically walks forward.
+ * Automatically holds forward.
  */
 public class AutoWalk extends Module {
 

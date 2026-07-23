@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Chat tweaks: timestamps, duplicate-spam prevention, and clear formatting.
+ * Chat tweaks: timestamps, duplicate-spam prevention, and formatting control.
  */
 public class BetterChat extends Module {
 
@@ -49,7 +49,8 @@ public class BetterChat extends Module {
 
         if (timestamps.getValue()) {
             String time = "§7[" + timeFormat.format(new Date()) + "] §r";
-            packet.getChatComponent();
+            packet.getChatComponent().getSiblings().clear();
+            packet.getChatComponent().appendText(time + text);
         }
     }
 
@@ -60,7 +61,15 @@ public class BetterChat extends Module {
         CPacketChatMessage packet = (CPacketChatMessage) event.getPacket();
         String msg = packet.getMessage();
         if (msg.length() > 100) {
-            // Intent only; actual packet resize requires a patch.
+            setPacketMessage(packet, msg.substring(0, 100));
         }
+    }
+
+    private void setPacketMessage(CPacketChatMessage packet, String message) {
+        try {
+            java.lang.reflect.Field f = CPacketChatMessage.class.getDeclaredField("message");
+            f.setAccessible(true);
+            f.set(packet, message);
+        } catch (Exception ignored) {}
     }
 }

@@ -607,4 +607,20 @@ public class PlayerControllerMP {
 		this.connection.sendPacket(new CPacketCustomPayload("MC|PickItem",
 				(new PacketBuffer(Unpooled.buffer())).writeVarIntToBuffer(index)));
 	}
+
+	public int getBlockHitDelay() {
+		return this.blockHitDelay;
+	}
+
+	public void setBlockHitDelay(int blockHitDelay) {
+		this.blockHitDelay = blockHitDelay;
+	}
+
+	public float getCurBlockDamageMP() {
+		return this.curBlockDamageMP;
+	}
+
+	public void setCurBlockDamageMP(float curBlockDamageMP) {
+		this.curBlockDamageMP = curBlockDamageMP;
+	}
 }

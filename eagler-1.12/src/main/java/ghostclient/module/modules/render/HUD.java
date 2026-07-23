@@ -11,14 +11,14 @@ import ghostclient.util.RenderUtils;
 import net.minecraft.client.gui.ScaledResolution;
 
 /**
- * Renders the active module list (ArrayList).
+ * Renders the active module list (ArrayList) in black and white.
  */
 public class HUD extends Module {
 
     public final BooleanValue rightSide = new BooleanValue("RightSide", "Align list on the right side.", true);
     public final BooleanValue sortLength = new BooleanValue("SortLength", "Sort modules by name length.", true);
     public final BooleanValue showKeybinds = new BooleanValue("ShowKeybinds", "Show keybinds next to names", true);
-    public final BooleanValue categoryColors = new BooleanValue("CategoryColors", "Color modules by category", true);
+    public final BooleanValue categoryColors = new BooleanValue("CategoryColors", "Color modules by category", false);
     public final BooleanValue background = new BooleanValue("Background", "Draw a dark background behind the list", true);
     public final ModeValue mode = new ModeValue("Mode", "ArrayList style", "Default", "Default", "Compact", "Clean");
 
@@ -83,13 +83,13 @@ public class HUD extends Module {
     private int getColor(Module module) {
         if (!categoryColors.getValue()) return 0xFFFFFFFF;
         switch (module.getCategory()) {
-            case Combat: return 0xFFFFAAAA;
-            case Movement: return 0xFFAAFFAA;
-            case Player: return 0xFFAAFFFF;
-            case Render: return 0xFFFFAAFF;
-            case World: return 0xFFFFFFAA;
-            case Misc: return 0xFFAAAAFF;
-            default: return 0xFFFFFFFF;
+            case Combat:   return 0xFFFFFFFF;
+            case Movement: return 0xFFCCCCCC;
+            case Player:   return 0xFFAAAAAA;
+            case Render:   return 0xFF888888;
+            case World:    return 0xFF666666;
+            case Misc:     return 0xFF444444;
+            default:       return 0xFFFFFFFF;
         }
     }
 }

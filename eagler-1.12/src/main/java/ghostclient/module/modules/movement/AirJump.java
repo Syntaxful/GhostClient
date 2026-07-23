@@ -6,7 +6,7 @@ import ghostclient.module.Category;
 import ghostclient.module.Module;
 
 /**
- * Jump while in the air.
+ * Jump while in the air (multi-jump).
  */
 public class AirJump extends Module {
 

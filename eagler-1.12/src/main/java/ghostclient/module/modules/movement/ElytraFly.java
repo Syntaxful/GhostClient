@@ -7,12 +7,12 @@ import ghostclient.module.Module;
 import ghostclient.setting.NumberValue;
 
 /**
- * Better elytra flight.
+ * Better elytra flight with adjustable speed (1-100 bps).
  */
 public class ElytraFly extends Module {
 
-    private final NumberValue speed = new NumberValue("Speed", "Forward speed in blocks per second", 1.0, 0.1, 100.0, 0.1);
-    private final NumberValue vertical = new NumberValue("Vertical", "Vertical speed", 0.5, 0.1, 5.0, 0.1);
+    private final NumberValue speed = new NumberValue("Speed", "Forward speed (blocks per second)", 20.0, 1.0, 100.0, 1.0);
+    private final NumberValue vertical = new NumberValue("Vertical", "Vertical speed (blocks per second)", 10.0, 1.0, 50.0, 1.0);
 
     public ElytraFly() {
         super(Category.Movement, "ElytraFly", "Elytra flight control.");
@@ -23,10 +23,16 @@ public class ElytraFly extends Module {
     @EventHandler
     public void onTick(TickEvent.Post event) {
         if (mc.player == null || !mc.player.isElytraFlying()) return;
+
+        // Convert bps to per-tick velocity (20 ticks/sec)
+        double bps = speed.getValue() / 20.0;
+        double yawRad = Math.toRadians(mc.player.rotationYaw);
+        mc.player.motionX = -Math.sin(yawRad) * bps;
+        mc.player.motionZ =  Math.cos(yawRad) * bps;
         mc.player.motionY = 0;
-        mc.player.motionX *= speed.getValue();
-        mc.player.motionZ *= speed.getValue();
-        if (mc.gameSettings.keyBindJump.isKeyDown()) mc.player.motionY = vertical.getValue();
-        if (mc.gameSettings.keyBindSneak.isKeyDown()) mc.player.motionY = -vertical.getValue();
+
+        double vBps = vertical.getValue() / 20.0;
+        if (mc.gameSettings.keyBindJump.isKeyDown())  mc.player.motionY =  vBps;
+        if (mc.gameSettings.keyBindSneak.isKeyDown()) mc.player.motionY = -vBps;
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.network.play.client.CPacketPlayer;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 
 /**
- * Cancels selected packets.
+ * Cancels selected outgoing packets.
  */
 public class PacketCanceller extends Module {
 

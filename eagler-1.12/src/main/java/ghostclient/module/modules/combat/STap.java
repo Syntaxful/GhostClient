@@ -9,11 +9,12 @@ import ghostclient.setting.NumberValue;
 
 /**
  * Automatically S-taps to reset sprint when hitting an entity.
+ * Mutually exclusive with WTap.
  */
 public class STap extends Module {
 
     private final NumberValue release = new NumberValue("Release Ticks", "How long to stop holding W", 2, 1, 8, 1);
-    private final NumberValue hold = new NumberValue("Hold Ticks", "How long to hold W after release", 2, 1, 8, 1);
+    private final NumberValue hold    = new NumberValue("Hold Ticks",    "How long to hold W after release", 2, 1, 8, 1);
     private int releaseTicks = 0;
     private int holdTicks = 0;
 
@@ -35,9 +36,7 @@ public class STap extends Module {
         if (releaseTicks > 0) {
             mc.gameSettings.keyBindForward.setKeyBindState(mc.gameSettings.keyBindForward.getKeyCode(), false);
             releaseTicks--;
-            if (releaseTicks == 0) {
-                holdTicks = hold.getInt();
-            }
+            if (releaseTicks == 0) holdTicks = hold.getInt();
             return;
         }
         if (holdTicks > 0) {

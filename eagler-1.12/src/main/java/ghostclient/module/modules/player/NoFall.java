@@ -7,7 +7,7 @@ import ghostclient.module.Module;
 import net.minecraft.network.play.client.CPacketPlayer;
 
 /**
- * Prevents fall damage by spoofing on-ground packets.
+ * Prevents fall damage by spoofing on-ground packets before landing.
  */
 public class NoFall extends Module {
 
@@ -18,9 +18,11 @@ public class NoFall extends Module {
     @EventHandler
     public void onPacketSend(PacketEvent.Send event) {
         if (mc.player == null) return;
+        if (mc.player.fallDistance <= 2.0f) return;
+
         if (event.getPacket() instanceof CPacketPlayer) {
             CPacketPlayer packet = (CPacketPlayer) event.getPacket();
-            if (mc.player.fallDistance > 2.0F) {
+            if (mc.player.onGround) {
                 setOnGround(packet, true);
             }
         }
@@ -32,7 +34,7 @@ public class NoFall extends Module {
             f.setAccessible(true);
             f.setBoolean(packet, onGround);
         } catch (Exception e) {
-            // Fallback: the packet handler patch will read this state.
+            // Patch fallback will handle the packet's onGround state if reflection fails
         }
     }
 }

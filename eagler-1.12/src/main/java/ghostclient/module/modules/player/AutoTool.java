@@ -4,12 +4,14 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
+import ghostclient.util.ItemUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 
 /**
  * Switches to the best tool for the block being mined.
+ * Only checks when the player is actually hitting a block.
  */
 public class AutoTool extends Module {
 
@@ -21,6 +23,7 @@ public class AutoTool extends Module {
     public void onTick(TickEvent.Post event) {
         if (mc.player == null || mc.world == null) return;
         if (!isHittingBlock()) return;
+
         BlockPos pos = mc.objectMouseOver.getBlockPos();
         if (pos == null) return;
         IBlockState state = mc.world.getBlockState(pos);
@@ -30,7 +33,7 @@ public class AutoTool extends Module {
         float bestSpeed = 1.0f;
         for (int i = 0; i < 9; i++) {
             ItemStack stack = mc.player.inventory.getStackInSlot(i);
-            if (stack == null) continue;
+            if (ItemUtil.isEmpty(stack)) continue;
             float speed = stack.getStrVsBlock(state);
             if (speed > bestSpeed) {
                 bestSpeed = speed;

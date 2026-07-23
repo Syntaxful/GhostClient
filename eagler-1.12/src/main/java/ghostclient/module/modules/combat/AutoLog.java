@@ -11,21 +11,18 @@ import ghostclient.setting.NumberValue;
  */
 public class AutoLog extends Module {
 
-    private final NumberValue health = new NumberValue("Health", "Disconnect when health is at or below this value.", 6.0, 1.0, 19.0, 0.5);
+    private final NumberValue health = new NumberValue("Health", "Disconnect below this HP", 6.0, 1.0, 20.0, 1.0);
 
     public AutoLog() {
-        super(Category.Combat, "AutoLog", "Disconnect when health is low.");
+        super(Category.Combat, "AutoLog", "Disconnect at low health.");
         addSetting(health);
     }
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.player == null || mc.player.connection == null) return;
-        if (mc.player.getHealth() <= health.getFloat()) {
-            if (mc.world != null) {
-                mc.world.sendQuittingDisconnectingPacket();
-            }
-            mc.loadWorld(null);
+        if (mc.player == null) return;
+        if (mc.player.getHealth() <= health.getValue() && mc.getConnection() != null) {
+            mc.getConnection().onDisconnect(null);
             setEnabled(false);
         }
     }

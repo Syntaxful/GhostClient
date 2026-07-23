@@ -4,47 +4,70 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
+import ghostclient.util.ItemUtil;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
 /**
- * Automatically equips the best armor.
+ * Automatically equips the best armor available in the inventory.
  */
 public class AutoArmor extends Module {
 
+    private int cooldown = 0;
+
     public AutoArmor() {
-        super(Category.Combat, "AutoArmor", "Auto equip the best armor.");
+        super(Category.Combat, "AutoArmor", "Auto equip best armor.");
     }
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.player == null) return;
-        for (int i = 9; i < 45; i++) {
-            ItemStack stack = mc.player.inventoryContainer.getSlot(i).getStack();
-            if (stack.getItem() instanceof ItemArmor) {
+        if (mc.player == null || cooldown-- > 0) return;
+
+        int windowId = mc.player.inventoryContainer.windowId;
+
+        for (EntityEquipmentSlot slot : new EntityEquipmentSlot[]{EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET}) {
+            int bestSlot = -1;
+            int bestTier = -1;
+
+            // Armor slot mapping in ContainerPlayer: HEAD=5, CHEST=6, LEGS=7, FEET=8
+            int armorContainerSlot = 5 + slot.getIndex();
+
+            ItemStack equipped = mc.player.getItemStackFromSlot(slot);
+            int currentTier = getArmorTier(equipped);
+
+            for (int i = 0; i < 36; i++) {
+                ItemStack stack = mc.player.inventory.getStackInSlot(i);
+                if (ItemUtil.isEmpty(stack) || !(stack.getItem() instanceof ItemArmor)) continue;
                 ItemArmor armor = (ItemArmor) stack.getItem();
-                int slot = getArmorSlot(armor.getEquipmentSlot());
-                if (slot != -1 && isBetter(stack, mc.player.inventory.getStackInSlot(slot))) {
-                    mc.playerController.windowClick(mc.player.inventoryContainer.windowId, i, 0, net.minecraft.inventory.ClickType.QUICK_MOVE, mc.player);
+                if (armor.getEquipmentSlot() != slot) continue;
+                int tier = getArmorTier(stack);
+                if (tier > bestTier && tier > currentTier) {
+                    bestTier = tier;
+                    bestSlot = i;
                 }
+            }
+
+            if (bestSlot != -1) {
+                int containerSlot = (bestSlot < 9) ? (bestSlot + 36) : bestSlot;
+                mc.playerController.windowClick(windowId, containerSlot, 0, ClickType.PICKUP, mc.player);
+                mc.playerController.windowClick(windowId, armorContainerSlot, 0, ClickType.PICKUP, mc.player);
+                mc.playerController.windowClick(windowId, containerSlot, 0, ClickType.PICKUP, mc.player);
+                cooldown = 5;
+                return;
             }
         }
     }
 
-    private int getArmorSlot(EntityEquipmentSlot slot) {
-        switch (slot) {
-            case HEAD: return 39;
-            case CHEST: return 38;
-            case LEGS: return 37;
-            case FEET: return 36;
-            default: return -1;
-        }
-    }
-
-    private boolean isBetter(ItemStack candidate, ItemStack equipped) {
-        if ((equipped == null || equipped.func_190926_b())) return true;
-        if (!(candidate.getItem() instanceof ItemArmor) || !(equipped.getItem() instanceof ItemArmor)) return false;
-        return ((ItemArmor) candidate.getItem()).damageReduceAmount > ((ItemArmor) equipped.getItem()).damageReduceAmount;
+    private int getArmorTier(ItemStack stack) {
+        if (ItemUtil.isEmpty(stack) || !(stack.getItem() instanceof ItemArmor)) return 0;
+        ItemArmor armor = (ItemArmor) stack.getItem();
+        String name = armor.getArmorMaterial().getName();
+        if (name.contains("diamond")) return 4;
+        if (name.contains("iron")) return 3;
+        if (name.contains("chain")) return 2;
+        if (name.contains("gold")) return 1;
+        return 1;
     }
 }

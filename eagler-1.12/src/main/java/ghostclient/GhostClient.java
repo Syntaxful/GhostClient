@@ -11,7 +11,6 @@ import ghostclient.module.ModuleManager;
 import ghostclient.module.modules.combat.AimAssist;
 import ghostclient.module.modules.combat.AutoLog;
 import ghostclient.module.modules.combat.AutoArmor;
-import ghostclient.module.modules.combat.AutoSpleef;
 import ghostclient.module.modules.combat.AutoClicker;
 import ghostclient.module.modules.combat.AutoSword;
 import ghostclient.module.modules.combat.AutoTotem;
@@ -36,7 +35,6 @@ import ghostclient.module.modules.misc.AutoRespawn;
 import ghostclient.module.modules.misc.BetterChat;
 import ghostclient.module.modules.misc.FakePlayer;
 import ghostclient.module.modules.misc.NameProtect;
-import ghostclient.module.modules.misc.PacketCanceller;
 import ghostclient.module.modules.misc.Panic;
 import ghostclient.module.modules.misc.Spammer;
 import ghostclient.module.modules.misc.WindowTitle;
@@ -144,7 +142,6 @@ public class GhostClient {
         Module hud = MODULES.getByName("ArrayList");
         if (hud != null) hud.setEnabled(true);
 
-        // Ensure ClickGUI is always bound to RSHIFT and enabled so the keybind never silently breaks
         Module clickGui = MODULES.getByName("ClickGUI");
         if (clickGui != null) {
             clickGui.setEnabled(true);
@@ -153,11 +150,10 @@ public class GhostClient {
     }
 
     private static void registerModules() {
-        // Combat (20)
+        // Combat (19)
         MODULES.register(new AimAssist());
         MODULES.register(new AutoLog());
         MODULES.register(new AutoArmor());
-        MODULES.register(new AutoSpleef());
         MODULES.register(new AutoClicker());
         MODULES.register(new AutoSword());
         MODULES.register(new AutoTotem());
@@ -217,7 +213,7 @@ public class GhostClient {
         MODULES.register(new Nuker());
         MODULES.register(new Scaffold());
 
-        // Render (31)
+        // Render (30)
         MODULES.register(new BlockSelection());
         MODULES.register(new Breadcrumbs());
         MODULES.register(new CameraClip());
@@ -257,7 +253,7 @@ public class GhostClient {
         MODULES.register(new XRay());
         MODULES.register(new Zoom());
 
-        // Misc (11)
+        // Misc (10)
         MODULES.register(new ghostclient.module.modules.misc.ClickGUIModule());
         MODULES.register(new AntiPacketKick());
         MODULES.register(new AutoCraft());
@@ -266,7 +262,6 @@ public class GhostClient {
         MODULES.register(new BetterChat());
         MODULES.register(new FakePlayer());
         MODULES.register(new NameProtect());
-        MODULES.register(new PacketCanceller());
         MODULES.register(new Panic());
         MODULES.register(new Spammer());
         MODULES.register(new WindowTitle());
@@ -299,7 +294,6 @@ public class GhostClient {
         if (pressed && Minecraft.getMinecraft().currentScreen == null) {
             for (Module module : MODULES.getAll()) {
                 if (module.getKeybind() == key) {
-                    // ClickGUI handles its own keybind; don't toggle it
                     if ("ClickGUI".equals(module.getName())) {
                         continue;
                     }

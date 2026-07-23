@@ -2336,4 +2336,12 @@ public class Minecraft implements IThreadListener {
 	public void handleReconnectPacket(String redirectURI) {
 		this.reconnectURI = redirectURI;
 	}
+
+	public int getRightClickDelayTimer() {
+		return this.rightClickDelayTimer;
+	}
+
+	public void setRightClickDelayTimer(int rightClickDelayTimer) {
+		this.rightClickDelayTimer = rightClickDelayTimer;
+	}
 }

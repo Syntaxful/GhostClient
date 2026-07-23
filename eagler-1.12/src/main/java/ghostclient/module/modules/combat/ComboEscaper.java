@@ -7,36 +7,70 @@ import ghostclient.module.Module;
 import ghostclient.setting.NumberValue;
 
 /**
- * Automatically jumps/escapes when low on health or on fire to break combos.
+ * Escapes a combo by jumping and strafing when taking rapid hits.
  */
 public class ComboEscaper extends Module {
 
-    private final NumberValue health = new NumberValue("Health", "Escape when health <= this", 8.0, 1.0, 20.0, 0.5);
-    private final NumberValue cooldown = new NumberValue("Cooldown", "Ticks between escapes", 20, 5, 100, 5);
-    private int ticks = 0;
+    private final NumberValue hits = new NumberValue("Hits", "Hits in window to trigger escape", 2, 2, 5, 1);
+    private final NumberValue window = new NumberValue("Window", "Ticks between hits to count", 30, 5, 60, 1);
+    private final NumberValue duration = new NumberValue("Duration", "Escape ticks", 10, 5, 30, 1);
+
+    private int lastHealthTicks = 0;
+    private float lastHealth = 0;
+    private int comboCount = 0;
+    private int escapeTicks = 0;
+    private int noHitTicks = 0;
 
     public ComboEscaper() {
-        super(Category.Combat, "ComboEscaper", "Jump to escape combos when low.");
-        addSetting(health);
-        addSetting(cooldown);
+        super(Category.Combat, "ComboEscaper", "Escape combos by jumping/strafing.");
+        addSetting(hits);
+        addSetting(window);
+        addSetting(duration);
+    }
+
+    @Override
+    public void onEnable() {
+        lastHealth = (mc.player != null) ? mc.player.getHealth() : 0;
+        comboCount = 0;
+        escapeTicks = 0;
+        noHitTicks = 0;
     }
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
         if (mc.player == null) return;
-        if (ticks > 0) {
-            ticks--;
+
+        if (escapeTicks > 0) {
+            escapeTicks--;
+            mc.player.setSprinting(true);
+            if (mc.player.onGround) mc.player.jump();
+            int dir = (escapeTicks % 16 < 8) ? 1 : -1;
+            mc.player.moveStrafing = 0.6f * dir;
             return;
         }
-        boolean low = mc.player.getHealth() <= health.getValue();
-        boolean onFire = mc.player.isBurning();
-        if (low || onFire) {
-            mc.player.jump();
-            if (mc.player.moveStrafing != 0) {
-                mc.player.motionX *= 1.1;
-                mc.player.motionZ *= 1.1;
+
+        // Reset strafing when not escaping
+        mc.player.moveStrafing = 0;
+
+        float health = mc.player.getHealth();
+        if (health < lastHealth) {
+            comboCount++;
+            noHitTicks = 0;
+            if (comboCount >= hits.getInt()) {
+                escapeTicks = duration.getInt();
+                comboCount = 0;
             }
-            ticks = cooldown.getInt();
+        } else {
+            noHitTicks++;
+            if (noHitTicks > window.getInt()) {
+                comboCount = 0;
+            }
         }
+        lastHealth = health;
+    }
+
+    @Override
+    public void onDisable() {
+        if (mc.player != null) mc.player.moveStrafing = 0;
     }
 }

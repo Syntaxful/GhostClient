@@ -18,8 +18,9 @@ public class AntiAFK extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
+        if (mc.player == null) return;
         ticks++;
-        if (ticks >= 600 && mc.player != null) {
+        if (ticks >= 600) {
             ticks = 0;
             if (mc.player.onGround) {
                 mc.player.jump();

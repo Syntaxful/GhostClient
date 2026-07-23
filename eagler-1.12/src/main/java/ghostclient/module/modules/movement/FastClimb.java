@@ -7,11 +7,11 @@ import ghostclient.module.Module;
 import ghostclient.setting.NumberValue;
 
 /**
- * Climb ladders faster.
+ * Climb ladders and vines faster. Uses key-down detection for direction.
  */
 public class FastClimb extends Module {
 
-    private final NumberValue speed = new NumberValue("Speed", "Climb speed", 0.3, 0.1, 1.0, 0.05);
+    private final NumberValue speed = new NumberValue("Speed", "Climb speed (blocks per tick)", 0.3, 0.05, 1.0, 0.05);
 
     public FastClimb() {
         super(Category.Movement, "FastClimb", "Climb ladders and vines faster.");
@@ -21,8 +21,12 @@ public class FastClimb extends Module {
     @EventHandler
     public void onTick(TickEvent.Post event) {
         if (mc.player == null) return;
-        if (mc.player.isOnLadder() && mc.player.moveForward > 0) {
+        if (!mc.player.isOnLadder()) return;
+
+        if (mc.gameSettings.keyBindForward.isKeyDown() || mc.gameSettings.keyBindJump.isKeyDown()) {
             mc.player.motionY = speed.getValue();
+        } else if (mc.gameSettings.keyBindSneak.isKeyDown()) {
+            mc.player.motionY = -speed.getValue();
         }
     }
 }

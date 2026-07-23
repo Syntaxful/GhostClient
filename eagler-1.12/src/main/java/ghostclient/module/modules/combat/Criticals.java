@@ -8,12 +8,14 @@ import ghostclient.setting.ModeValue;
 import net.minecraft.network.play.client.CPacketPlayer;
 
 /**
- * Sends critical packets automatically when attacking.
+ * Sends critical-hit position packets automatically when attacking.
+ * Works by sending small Y-offset packets that register as a fall on the server.
  */
 public class Criticals extends Module {
 
-    private final ModeValue mode = new ModeValue("Mode", "Critical hit style", "Packet", "Packet", "Jump", "Mini");
-    private final ModeValue timing = new ModeValue("Timing", "1.8 or 1.9+ attack system", "1.9+", "1.8", "1.9+");
+    private final ModeValue mode   = new ModeValue("Mode",   "Critical hit style",      "Packet", "Packet", "Jump", "Mini");
+    private final ModeValue timing = new ModeValue("Timing", "Attack timing",            "1.9+",   "1.8",   "1.9+");
+    private boolean wasAttacking = false;
 
     public Criticals() {
         super(Category.Combat, "Criticals", "Makes every hit a critical hit.");
@@ -23,21 +25,31 @@ public class Criticals extends Module {
 
     @EventHandler
     public void onTick(TickEvent.Post event) {
-        if (mc.player == null || !mc.player.onGround) return;
-        if (!mc.gameSettings.keyBindAttack.isKeyDown() || mc.pointedEntity == null) return;
+        if (mc.player == null) return;
+
+        // Trigger on the rising edge of the attack key while targeting an entity
+        boolean attacking = mc.gameSettings.keyBindAttack.isKeyDown() && mc.pointedEntity != null;
+        if (!attacking || wasAttacking) {
+            wasAttacking = attacking;
+            return;
+        }
+        wasAttacking = true;
+
+        // Respect 1.9 cooldown if enabled
         if ("1.9+".equals(timing.getValue()) && mc.player.getCooledAttackStrength(0.0f) < 1.0f) return;
 
         String m = mode.getValue();
         if ("Packet".equals(m)) {
-            mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.05, mc.player.posZ, false));
-            mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY, mc.player.posZ, false));
+            // Send micro-jump packets so the server registers a critical
+            mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.05,   mc.player.posZ, false));
+            mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY,          mc.player.posZ, false));
             mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.0125, mc.player.posZ, false));
-            mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY, mc.player.posZ, true));
-        } else if ("Jump".equals(m)) {
+            mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY,          mc.player.posZ, true));
+        } else if ("Jump".equals(m) && mc.player.onGround) {
             mc.player.jump();
         } else if ("Mini".equals(m)) {
             mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY + 0.0625, mc.player.posZ, false));
-            mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY, mc.player.posZ, true));
+            mc.player.connection.sendPacket(new CPacketPlayer.Position(mc.player.posX, mc.player.posY,          mc.player.posZ, true));
         }
     }
 }

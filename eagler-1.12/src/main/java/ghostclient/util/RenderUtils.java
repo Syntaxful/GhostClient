@@ -9,6 +9,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.List;
+
 /**
  * GhostClient rendering utility.
  */
@@ -107,21 +109,23 @@ public class RenderUtils {
         WorldRenderer buffer = tessellator.getBuffer();
 
         if (fill) {
+            // Fill only the front face (simpler, works in TeaVM without complex geometry)
             buffer.begin(7, DefaultVertexFormats.POSITION);
             buffer.pos(box.minX, box.minY, box.minZ).endVertex();
             buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
             buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
             buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
             tessellator.draw();
-        } else {
-            buffer.begin(3, DefaultVertexFormats.POSITION);
-            buffer.pos(box.minX, box.minY, box.minZ).endVertex();
-            buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
-            buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
-            buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
-            buffer.pos(box.minX, box.minY, box.minZ).endVertex();
-            tessellator.draw();
         }
+
+        // Always draw outline
+        buffer.begin(3, DefaultVertexFormats.POSITION);
+        buffer.pos(box.minX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.minY, box.minZ).endVertex();
+        buffer.pos(box.maxX, box.maxY, box.minZ).endVertex();
+        buffer.pos(box.minX, box.maxY, box.minZ).endVertex();
+        buffer.pos(box.minX, box.minY, box.minZ).endVertex();
+        tessellator.draw();
 
         GlStateManager.enableCull();
         GlStateManager.enableDepth();
@@ -136,6 +140,31 @@ public class RenderUtils {
         double renderY = y - mc.getRenderManager().viewerPosY;
         double renderZ = z - mc.getRenderManager().viewerPosZ;
         return new Vec3d(renderX, renderY, renderZ);
+    }
+
+    public static void drawPolyline(List<Vec3d> points, int color, float width) {
+        if (points.size() < 2) return;
+        glColor(color);
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableDepth();
+        net.lax1dude.eaglercraft.opengl.EaglercraftGPU.glLineWidth(width);
+        GlStateManager.tryBlendFuncSeparate(RealOpenGLEnums.GL_SRC_ALPHA, RealOpenGLEnums.GL_ONE_MINUS_SRC_ALPHA,
+                RealOpenGLEnums.GL_ONE, RealOpenGLEnums.GL_ZERO);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer buffer = tessellator.getBuffer();
+        buffer.begin(3, DefaultVertexFormats.POSITION);
+        for (Vec3d p : points) {
+            Vec3d r = getRenderPos(p.xCoord, p.yCoord, p.zCoord);
+            buffer.pos(r.xCoord, r.yCoord, r.zCoord).endVertex();
+        }
+        tessellator.draw();
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     public static void prepare2D() {

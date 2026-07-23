@@ -4,24 +4,23 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.world.World;
 
 /**
- * Spawns a fake player for testing.
+ * Spawns a fake player model visible to the client only.
+ * This is intentionally a client-side visual; it cannot be made server-side from the client mod.
  */
 public class FakePlayer extends Module {
 
-    private EntityOtherPlayerMP fakePlayer = null;
+    private net.minecraft.client.entity.EntityOtherPlayerMP fakePlayer = null;
 
     public FakePlayer() {
-        super(Category.Misc, "FakePlayer", "Spawns a fake player entity.");
+        super(Category.Misc, "FakePlayer", "Client-side fake player visual.");
     }
 
     @Override
     public void onEnable() {
         if (mc.world == null || mc.player == null) return;
-        fakePlayer = new EntityOtherPlayerMP((World) mc.world, mc.player.getGameProfile());
+        fakePlayer = new net.minecraft.client.entity.EntityOtherPlayerMP(mc.world, mc.player.getGameProfile());
         fakePlayer.setPosition(mc.player.posX, mc.player.posY, mc.player.posZ);
         fakePlayer.rotationYaw = mc.player.rotationYaw;
         fakePlayer.rotationPitch = mc.player.rotationPitch;
