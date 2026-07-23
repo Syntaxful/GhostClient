@@ -59,4 +59,10 @@ attached_assets/
 
 # Build output
 Game/
+eagler-1.12/build/
+eagler-1.12/.gradle/
+eagler-1.12/.idea/
+
+# Duplicate / nested checkout
+GhostClient/
 
