@@ -72,14 +72,21 @@
     <link type="image/png" rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAR/SURBVEhLtZXZK3ZRFMYPcqXc+gv413DHxVuGIpIhkciQWaRccCNjSCkligwXSOZ5nmfv9zvn2e8+58V753sudmuvvdZ61l5r7XOc8H+GS/D19aUNkPz5+aktQH5/f//4+LBKZKuRkpUtQjCUYG5gD2T38vLy/PwsDfL9/f3Dw8PT05M0b29vnKLhCKCBT4L4gvBLBIei4//4+Hh1dUVEQutUuLu7E83FxQUGnKLBWKfQaA3S+AREVxaEOD8/Pzk50XpzcyMDcH19zdZG3N3d3dzc3Nvb01aX5pQUpQGGQJxcQpfNysoKhUIdHR1o1tbWbInYAgxIPDMzMy8vLzc3FxqOdMoRqwJK8G8ALUYIhHMiSEhIwI6CyIb0qQzC4eGhsXCc1tZWnZIEKzdQJQSXgKxfX18RCM3Z5eWlcfVAxKOjo+Pj49PTU88lTOk2NjbMsePc3t6SAfcgFdszOyMuAdeBg0CQi2lhYUHOeOLDCisN8FzcPFZXV3t7ezHY3t5GQ+6it+2xMASsKhEEWKsmRLRBBUpPvpJ/TpFKFBwKYAiITmicsbYhdHfJAltqhUCVsCQhwslmeXmZxiBQT9c0Ar9E2O3v72sYSE0N1yQArkKy0kBMXLqlZqIZHR3t6empqqqSDcBdhXEJSJ/bUc3q6uq+vj629GB9fR1WsLW1NTs7u7S0RN2locMjIyOEm5ubQ7+4uJienk4/+vv77Y1hwhLBEKhwWHitdVFfX9/Y2Gg2HuLi4owUAysrK8yCG97rh0+ApP5Q2ZycHFlPTExUVFRIBvn5+WhKSkp2dnaMKhptbW2426GgQ/rwuAQCZ1hwFayLiork9hMFBQV1dXVmE0BLS4vqw3QFB8kn4IAxoGPkYpxi4FeDmpqas7Mz4pClAgqGwD48rjY2NmacYqC0tJQ1KSlJWyE5OZkpUKkBAxZVIntAoZh04+Q48fHxPNGBgYHExMT29naj9cBodnZ2mo3jlJWVMeW2OGQck4B1amqqoaGhqamJjx2lGxwcpL0mUgR8fJhsWqJtSkoKU2SbHHUDpkhPBujd8xuQG6PJRM/Pz09PT7O1NNnZ2Tw3fgZkXVhYKCUlUhBATP+hCVyKZGky17RV0g04laayslJ6hlVeFHB4eFhKaogGd0LxtmTgE+hbhKDnPjMzgw8E3qGL2tpaBWpubjYqj2BoaEj6rq4uNATRZ0ZwCbiL6gXEzINk5vCBQJ9rMD4+rkA8QNK036uDg4Py8vLu7m680KjIBNR3zBDoWQM1g98snyB+VSoRW8C/UwR81/SvhgNj9JOTkwwVERUdRBEI0BAdLRVERkhLS8vIyEDQlrsTPTU1lVFhKxARvZgUlFLbegCf4BvIsbi4mIg4E5EogIHhiKCMtU0WUFiVy06j5fAJIDdSBDQw+PegDfBRcbOPwH4F9LuFWIIQdQNKwWqzIE0aoFUaBsw+SQuFw0uNtC9A+F4i3QNrbg3IDn+SAsHh+wYiEpeyBEMLv/cAO6KzAijxxB+Y4wisBhssJUhjEbPJf4Nw+B+JXqLW3bw+wQAAAABJRU5ErkJggg==">
 </head>
 <body style="margin:0px;width:100%;height:100%;overflow:hidden;background-color:#121212;" id="game_frame">
-    <div style="margin:0px;width:100%;height:100%;font-family:sans-serif;display:flex;align-items:center;user-select:none;" id="launch_countdown_screen">
-        <div style="margin:auto;text-align:center;color:#FFFFFF;">
-            <h1>This file is from <span style="color:#FF5555;">${date}</span></h1>
-            <h2>Game will launch in <span id="launchCountdownNumber">5</span>...</h2>
-            <div style="border:2px solid #FFFFFF;width:100%;height:15px;padding:1px;margin-bottom:20vh;">
-                <div id="launchCountdownProgress" style="background-color:#555555;width:0%;height:100%;"></div>
+        <style>
+        @keyframes gc-pulse { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.4; } }
+    </style>
+    <div style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;font-family:sans-serif;display:flex;align-items:center;justify-content:center;user-select:none;background-color:#000000;overflow:hidden;" id="launch_countdown_screen">
+        <div style="position:absolute;inset:0;opacity:0.3;background:radial-gradient(circle at 50% 50%, #1a1a2e 0%, #000000 60%);"></div>
+        <div style="position:absolute;inset:0;opacity:0.2;animation:gc-pulse 4s ease-in-out infinite;background:radial-gradient(circle at 30% 70%, #16213e 0%, transparent 50%), radial-gradient(circle at 70% 30%, #0f3460 0%, transparent 50%);"></div>
+        <div style="position:relative;z-index:10;text-align:center;color:#FFFFFF;">
+            <h1 style="margin:0 0 8px;font-size:48px;letter-spacing:2px;">GhostClient</h1>
+            <p style="margin:0 0 40px;color:#9ca3af;font-size:14px;letter-spacing:0.3em;text-transform:uppercase;">by Syntaxful</p>
+            <h2 style="margin:0 0 30px;font-size:20px;font-weight:400;color:#d1d5db;">Launching in <span id="launchCountdownNumber" style="color:#60a5fa;font-weight:700;">5</span>...</h2>
+            <div style="width:300px;height:6px;background-color:#1f2937;border-radius:3px;margin:0 auto 30px;overflow:hidden;">
+                <div id="launchCountdownProgress" style="background:linear-gradient(90deg, #60a5fa, #a78bfa);width:0%;height:100%;"></div>
             </div>
-            <button id="skipCountdown" autofocus style="padding:10px 20px;font-size:1rem;color:#FFFFFF;background-color:#333333;border:none;cursor:pointer;border-radius:5px;">Skip</button>
+            <p style="margin:0 0 20px;color:#6b7280;font-size:12px;">This file is from <span style="color:#FF5555;">${date}</span></p>
+            <button id="skipCountdown" autofocus style="padding:10px 24px;font-size:14px;color:#FFFFFF;background-color:#333333;border:none;cursor:pointer;border-radius:5px;">Skip</button>
         </div>
     </div>
 </body>
