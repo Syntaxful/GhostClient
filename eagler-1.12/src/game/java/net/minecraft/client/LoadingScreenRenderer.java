@@ -91,6 +91,7 @@ public class LoadingScreenRenderer implements IProgressUpdate {
 
 	/**
 	 * Updates the progress bar on the loading screen to the specified amount.
+	 * GhostClient: black screen, white branding and a rotating loading circle.
 	 */
 	public void setLoadingProgress(int progress) {
 		if (!this.mc.running) {
@@ -103,12 +104,10 @@ public class LoadingScreenRenderer implements IProgressUpdate {
 			if (i - this.systemTime >= 100L) {
 				this.systemTime = i;
 				ScaledResolution scaledresolution = mc.scaledResolution;
-				int j = scaledresolution.getScaleFactor();
 				int k = scaledresolution.getScaledWidth();
 				int l = scaledresolution.getScaledHeight();
 
 				GlStateManager.clear(256);
-
 				GlStateManager.matrixMode(5889);
 				GlStateManager.loadIdentity();
 				GlStateManager.ortho(0.0D, scaledresolution.getScaledWidth_double(),
@@ -116,55 +115,50 @@ public class LoadingScreenRenderer implements IProgressUpdate {
 				GlStateManager.matrixMode(5888);
 				GlStateManager.loadIdentity();
 				GlStateManager.translate(0.0F, 0.0F, -200.0F);
-
 				GlStateManager.clear(16640);
 
+				// Black background
 				Tessellator tessellator = Tessellator.getInstance();
 				WorldRenderer bufferbuilder = tessellator.getBuffer();
-				this.mc.getTextureManager().bindTexture(Gui.OPTIONS_BACKGROUND);
-				float f = 32.0F;
-				bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-				bufferbuilder.pos(0.0D, (double) l, 0.0D).tex(0.0D, (double) ((float) l / 32.0F)).color(64, 64, 64, 255)
-						.endVertex();
-				bufferbuilder.pos((double) k, (double) l, 0.0D)
-						.tex((double) ((float) k / 32.0F), (double) ((float) l / 32.0F)).color(64, 64, 64, 255)
-						.endVertex();
-				bufferbuilder.pos((double) k, 0.0D, 0.0D).tex((double) ((float) k / 32.0F), 0.0D).color(64, 64, 64, 255)
-						.endVertex();
-				bufferbuilder.pos(0.0D, 0.0D, 0.0D).tex(0.0D, 0.0D).color(64, 64, 64, 255).endVertex();
+				bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
+				bufferbuilder.pos(0.0D, (double) l, 0.0D).color(0, 0, 0, 255).endVertex();
+				bufferbuilder.pos((double) k, (double) l, 0.0D).color(0, 0, 0, 255).endVertex();
+				bufferbuilder.pos((double) k, 0.0D, 0.0D).color(0, 0, 0, 255).endVertex();
+				bufferbuilder.pos(0.0D, 0.0D, 0.0D).color(0, 0, 0, 255).endVertex();
 				tessellator.draw();
 
-				if (progress >= 0) {
-					int i1 = 100;
-					int j1 = 2;
-					int k1 = k / 2 - 50;
-					int l1 = l / 2 + 16;
-					GlStateManager.disableTexture2D();
-					bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-					bufferbuilder.pos((double) k1, (double) l1, 0.0D).color(128, 128, 128, 255).endVertex();
-					bufferbuilder.pos((double) k1, (double) (l1 + 2), 0.0D).color(128, 128, 128, 255).endVertex();
-					bufferbuilder.pos((double) (k1 + 100), (double) (l1 + 2), 0.0D).color(128, 128, 128, 255)
-							.endVertex();
-					bufferbuilder.pos((double) (k1 + 100), (double) l1, 0.0D).color(128, 128, 128, 255).endVertex();
-					bufferbuilder.pos((double) k1, (double) l1, 0.0D).color(128, 255, 128, 255).endVertex();
-					bufferbuilder.pos((double) k1, (double) (l1 + 2), 0.0D).color(128, 255, 128, 255).endVertex();
-					bufferbuilder.pos((double) (k1 + progress), (double) (l1 + 2), 0.0D).color(128, 255, 128, 255)
-							.endVertex();
-					bufferbuilder.pos((double) (k1 + progress), (double) l1, 0.0D).color(128, 255, 128, 255)
-							.endVertex();
-					tessellator.draw();
-					GlStateManager.enableTexture2D();
-				}
+				String title = "GhostClient";
+				String subtitle = "made by Syntaxful";
+				String status = this.currentlyDisplayedText.isEmpty() ? "Loading..." : this.currentlyDisplayedText;
+				int cx = k / 2;
+				int cy = l / 2;
 
-				GlStateManager.enableBlend();
-				GlStateManager.tryBlendFuncSeparate(RealOpenGLEnums.GL_SRC_ALPHA,
-						RealOpenGLEnums.GL_ONE_MINUS_SRC_ALPHA, RealOpenGLEnums.GL_ONE, RealOpenGLEnums.GL_ZERO);
-				this.mc.fontRendererObj.drawStringWithShadow(this.currentlyDisplayedText,
-						(float) ((k - this.mc.fontRendererObj.getStringWidth(this.currentlyDisplayedText)) / 2),
-						(float) (l / 2 - 4 - 16), 16777215);
-				this.mc.fontRendererObj.drawStringWithShadow(this.message,
-						(float) ((k - this.mc.fontRendererObj.getStringWidth(this.message)) / 2),
-						(float) (l / 2 - 4 + 8), 16777215);
+				this.mc.fontRendererObj.drawStringWithShadow(title,
+						(float) (cx - this.mc.fontRendererObj.getStringWidth(title) / 2),
+						(float) (cy - 40), 0xFFFFFFFF);
+				this.mc.fontRendererObj.drawStringWithShadow(subtitle,
+						(float) (cx - this.mc.fontRendererObj.getStringWidth(subtitle) / 2),
+						(float) (cy - 25), 0xFFAAAAAA);
+				this.mc.fontRendererObj.drawStringWithShadow(status,
+						(float) (cx - this.mc.fontRendererObj.getStringWidth(status) / 2),
+						(float) (cy + 48), 0xFFCCCCCC);
+
+				// Rotating loading circle
+				int radius = 18;
+				int segments = 24;
+				float angle = (i % 2000L) / 2000.0F * 360.0F;
+				GlStateManager.disableTexture2D();
+				bufferbuilder.begin(6, DefaultVertexFormats.POSITION_COLOR);
+				bufferbuilder.pos((double) cx, (double) cy, 0.0D).color(255, 255, 255, 64).endVertex();
+				for (int s = 0; s <= segments; s++) {
+					float a = (float) Math.toRadians(angle + s * (360.0F / segments));
+					int px = (int) (cx + Math.cos(a) * radius);
+					int py = (int) (cy + Math.sin(a) * radius);
+					int alpha = (int) (255 * (1.0F - (float) s / segments));
+					bufferbuilder.pos((double) px, (double) py, 0.0D).color(255, 255, 255, alpha).endVertex();
+				}
+				tessellator.draw();
+				GlStateManager.enableTexture2D();
 
 				this.mc.updateDisplay();
 			}

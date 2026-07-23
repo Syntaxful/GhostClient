@@ -22,9 +22,18 @@
 					const splash = document.createElement("div");
 					splash.style.width = "100%";
 					splash.style.height = "100%";
-					splash.style.imageRendering = "pixelated";
-					splash.style.background = "center / contain no-repeat url(splash.png), 0px 0px / 1000000% 1000000% no-repeat url(splash.png) white";
+					splash.style.display = "flex";
+					splash.style.alignItems = "center";
+					splash.style.justifyContent = "center";
+					splash.style.flexDirection = "column";
+					splash.style.backgroundColor = "#000000";
+					splash.style.color = "#FFFFFF";
+					splash.style.fontFamily = "sans-serif";
+					splash.innerHTML = "<h1 style='margin:0;font-size:48px;letter-spacing:2px;'>GhostClient</h1><p style='margin:8px 0 24px;color:#AAAAAA;'>made by Syntaxful</p><div style='width:40px;height:40px;border:3px solid #333;border-top:3px solid #FFF;border-radius:50%;animation:spin 1s linear infinite;'></div>";
 					document.body.appendChild(splash);
+					const spin = document.createElement("style");
+					spin.innerHTML = "@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}";
+					document.head.appendChild(spin);
 				
 					console.log("Downloading assets.epk...");
 					var assetsEPK;

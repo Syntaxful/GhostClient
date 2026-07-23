@@ -16,12 +16,12 @@ import net.minecraft.util.math.BlockPos;
 /**
  * Breaks blocks under nearby players to city them.
  */
-public class AutoCity extends Module {
+public class AutoSpleef extends Module {
 
-    private final NumberValue range = new NumberValue("Range", "City range", 5, 1, 6, 1);
+    private final NumberValue range = new NumberValue("Range", "Spleef range", 5, 1, 6, 1);
 
-    public AutoCity() {
-        super(Category.Combat, "AutoCity", "Break blocks under nearby players.");
+    public AutoSpleef() {
+        super(Category.Combat, "AutoSpleef", "Break blocks under nearby players.");
         addSetting(range);
     }
 

@@ -5,6 +5,8 @@
 >
 > **Transfer status:** Transferred to Syntaxful and branded as **GhostClient 1.12** for Eaglercraft 1.12.2.
 > All PlxeXyzz references replaced. Module source classes are present; build verification pending.
+>
+> **UI/Module refresh:** Black-and-white Feather-style UI, animated space menu backgrounds, transparent in-game GUIs, visual keybind keyboard, and module renames/removals applied.
 
 ## Transfer & 1.12 Branding Checklist
 - [x] Transfer ownership from PlxeXyzz to Syntaxful
@@ -174,13 +176,24 @@
 
 ## Module Inventory
 Registered modules by category (current source):
-- **Combat** — 16: AimAssist, AutoArmor, AutoCity, AutoClicker, AutoSword, AutoTotem, BedAura, BowAimbot, Criticals, Hitboxes, KillAura, Offhand, Surround, TriggerBot, Velocity, WTap
-- **Movement** — 20: AirJump, AntiLevitation, AutoWalk, Blink, BoatFly, ElytraFly, EntitySpeed, FastClimb, Fly, HighJump, IceSpeed, Jesus, LongJump, NoSlow, Parkour, SafeWalk, Sneak, Speed, Sprint, Step, Timer
-- **Player** — 14: AntiAFK, AntiHunger, AutoEat, AutoFish, AutoTool, ChestSwap, FastUse, InventoryMove, NoFall, NoRotate, PotionSpoof, Reach, SilentMine, SpeedMine
+- **Combat** — 16: AimAssist, AutoArmor, AutoSpleef, AutoClicker, AutoSword, AutoTotem, BedAura, BowAimbot, Criticals, Hitboxes, KillAura, Offhand, Surround, TriggerBot, Velocity, WTap
+- **Movement** — 20: AirJump, AntiLevitation, AutoWalk, Blink, BoatFly, ElytraFly, EntitySpeed, FastClimb, Fly, HighJump, IceSpeed, LongJump, NoSlow, Parkour, SafeWalk, Sneak, Speed, Sprint, Step, Timer, WaterWalker
+- **Player** — 10: AntiAFK, AntiHunger, AutoEat, AutoFish, AutoTool, FastElytra, NoFall, Reach, SilentMine, SpeedMine
 - **World** — 4: FastBreak, FastPlace, Nuker, Scaffold
-- **Render** — 32: BlockSelection, BossStack, Breadcrumbs, CameraClip, ChestESP, Coordinates, ESP, FPS, FovModifier, Freecam, Fullbright, HUD, HoleESP, LowFire, MotionBlur, Nametags, NoHurtCam, NoWeather, Search, StorageESP, TimeChanger, ToggleSprint, Tracers, Trail, Trajectories, UnfocusedCPU, ViewModel, VoidESP, Waypoints, XRay, Zoom
-- **Misc** — 13: ClickGUIModule, AntiPacketKick, AutoCraft, AutoReconnect, AutoRespawn, BetterChat, FakePlayer, NameProtect, Notebot, PacketCanceller, Panic, Spammer, WindowTitle
-- **Total registered:** 99 modules
+- **Render** — 31: BlockSelection, Breadcrumbs, CameraClip, ChestESP, Coordinates, CPS, ESP, FPS, FovModifier, Freecam, Fullbright, HUD, HoleESP, LowFire, MotionBlur, Nametags, NoFog, NoHurtCam, NoRender, NoWeather, PotionEffects, Search, StorageESP, TimeChanger, ToggleSprint, Tracers, Trail, Trajectories, UnfocusedCPU, ViewModel, VoidESP, Waypoints, XRay, Zoom
+- **Misc** — 11: ClickGUIModule, AntiPacketKick, AntiAnimations, AutoCraft, AutoRespawn, BetterChat, FakePlayer, NameProtect, PacketCanceller, Panic, Spammer, WindowTitle
+- **Total registered:** 92 modules
+
+## Recent UI/Module Changes (07/23/2026)
+- [x] Animated black-and-white space menu background on `GuiScreen` (twinkling stars + shooting star)
+- [x] Redesigned `ClickGUI` with category tabs, module cards, expandable settings, search, and visual keyboard keybind selector
+- [x] Redesigned `GuiMainMenu` with Feather-style centered layout, GhostClient branding, and black/white space background
+- [x] Transparent in-game GUIs: pause menu (`GuiIngameMenu`), inventory (`GuiInventory`), and all containers (`GuiContainer`) use a translucent dark overlay
+- [x] Loading screens (`LoadingScreenRenderer`, `GuiDownloadTerrain`, `GuiScreenFirstLoad`, HTML splashes) now show GhostClient branding + spinning loader
+- [x] Early web loaders (`EarlyLoadScreen` TeaVM + WASM) cleared to black to match the GhostClient theme
+- [x] Renamed modules: `Jesus` → `WaterWalker`, `AutoCity` → `AutoSpleef`, `ChestSwap` → `FastElytra`
+- [x] Removed modules: `FastUse`, `InventoryMove`, `NoRotate`, `PotionSpoof`, `BossStack`, `Notebot`, `AutoReconnect`
+- [x] Added/adjusted numeric settings for `BoatFly`, `ElytraFly`, `KillAura`, `Reach`, and `Nuker`
 
 ## Hook Reference
 Existing `// GHOSTCLIENT HOOK` calls in vanilla source:

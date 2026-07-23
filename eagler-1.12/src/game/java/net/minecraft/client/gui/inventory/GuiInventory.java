@@ -81,7 +81,7 @@ public class GuiInventory extends InventoryEffectRenderer implements IRecipeShow
 	 * Draws the screen and all the components in it.
 	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		this.drawDefaultBackground();
+		// In-game inventory: no world-blocking background so the game stays visible
 		this.hasActivePotionEffects = !this.field_192045_A.func_191878_b();
 
 		if (this.field_192045_A.func_191878_b() && this.field_192046_B) {
@@ -103,11 +103,9 @@ public class GuiInventory extends InventoryEffectRenderer implements IRecipeShow
 	 * Draws the background layer of this container (behind the items).
 	 */
 	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.getTextureManager().bindTexture(INVENTORY_BACKGROUND);
+		// GhostClient: keep inventory transparent so the world is visible behind it
 		int i = this.guiLeft;
 		int j = this.guiTop;
-		this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 		drawEntityOnScreen(i + 51, j + 75, 30, (float) (i + 51) - this.oldMouseX,
 				(float) (j + 75 - 50) - this.oldMouseY, this.mc.player);
 	}

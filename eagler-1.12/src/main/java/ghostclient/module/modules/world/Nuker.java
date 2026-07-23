@@ -14,10 +14,12 @@ import net.minecraft.util.math.BlockPos;
 public class Nuker extends Module {
 
     private final NumberValue range = new NumberValue("Range", "Break radius", 4, 1, 6, 1);
+    private final ghostclient.setting.BooleanValue ignoreTileEntities = new ghostclient.setting.BooleanValue("IgnoreTileEntities", "Skip tile entities", true);
 
     public Nuker() {
         super(Category.World, "Nuker", "Break blocks around you.");
         addSetting(range);
+        addSetting(ignoreTileEntities);
     }
 
     @EventHandler
@@ -30,6 +32,7 @@ public class Nuker extends Module {
                 for (int z = -r; z <= r; z++) {
                     BlockPos pos = playerPos.add(x, y, z);
                     if (!mc.world.isAirBlock(pos)) {
+                        if (ignoreTileEntities.getValue() && mc.world.getTileEntity(pos) != null) continue;
                         mc.playerController.clickBlock(pos, EnumFacing.UP);
                     }
                 }

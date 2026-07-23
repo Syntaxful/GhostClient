@@ -2,6 +2,7 @@ package net.minecraft.client.gui;
 
 import java.io.IOException;
 
+import ghostclient.util.RenderUtils;
 import net.lax1dude.eaglercraft.PauseMenuCustomizeState;
 import net.lax1dude.eaglercraft.minecraft.GuiButtonWithStupidIcons;
 import net.lax1dude.eaglercraft.notifications.GuiButtonNotifBell;
@@ -186,9 +187,11 @@ public class GuiIngameMenu extends GuiScreen {
 
 	/**
 	 * Draws the screen and all the components in it.
+	 * In-game pause menu: keep the game world visible behind a translucent dark overlay.
 	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		this.drawGhostClientBackground();
+		// No full-screen background so the paused world stays visible
+		RenderUtils.drawRect(0, 0, this.width, this.height, 0x44000000);
 		String titleStr = I18n.format("menu.game", new Object[0]);
 		int titleStrWidth = fontRendererObj.getStringWidth(titleStr);
 		this.drawString(this.fontRendererObj, titleStr, (this.width - titleStrWidth) / 2, 40, 0xFFF8F8FF);

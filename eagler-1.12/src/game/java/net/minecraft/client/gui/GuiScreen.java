@@ -497,24 +497,57 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
 	}
 
 	/**
-	 * GhostClient black-and-white space background for all menu screens.
-	 * Covers the whole screen with pure black, a subtle dark gradient, and a
-	 * static starfield. No vanilla Minecraft world/options background is shown.
+	 * GhostClient animated black-and-white space background for menu screens.
+	 * Pure black base, subtle depth gradient, and a twinkling white/gray starfield.
+	 * No vanilla Minecraft world/options background is shown.
 	 */
 	public void drawGhostClientBackground() {
+		long time = Minecraft.getSystemTime();
 		// Pure black base
 		this.drawRect(0, 0, this.width, this.height, 0xFF000000);
-		// Subtle top-to-bottom gradient for depth
-		this.drawGradientRect(0, 0, this.width, this.height, 0xFF000000, 0xFF151515);
-		// Static starfield (white stars only)
-		for (int y = 2; y < this.height; y += 28) {
-			for (int x = 2; x < this.width; x += 28) {
-				int hash = (x * 73856093) ^ (y * 19349663) ^ (x * y * 17);
-				if (hash % 100 < 10) {
+		// Subtle top-to-bottom gradient for depth (very dark gray, almost black)
+		this.drawGradientRect(0, 0, this.width, this.height, 0xFF000000, 0xFF0A0A0A);
+
+		// Animated starfield (white/gray only)
+		for (int y = 0; y < this.height; y += 32) {
+			for (int x = 0; x < this.width; x += 32) {
+				int hash = (x * 73856093) ^ (y * 19349663) ^ ((x + y) * 83492791);
+				if (hash % 100 < 12) {
 					int starX = x + ((hash >> 4) & 0xF);
 					int starY = y + ((hash >> 8) & 0xF);
-					int size = ((hash % 3) + 1); // 1-2 px
-					this.drawRect(starX, starY, starX + size, starY + size, 0xFFFFFFFF);
+					int size = (Math.abs(hash) % 2) + 1; // 1-2 px
+					// Twinkle: brightness varies with time per star
+					int phase = (int) ((time / 60L + (hash >> 12)) % 200L);
+					int alpha;
+					if (phase < 100) {
+						alpha = 120 + (phase * 135 / 100); // 120 -> 255
+					} else {
+						alpha = 255 - ((phase - 100) * 135 / 100); // 255 -> 120
+					}
+					int color = (alpha << 24) | 0xFFFFFF;
+					this.drawRect(starX, starY, starX + size, starY + size, color);
+				}
+			}
+		}
+
+		// Occasional shooting star (white streak)
+		int shootSeed = (int) ((time / 4000L) % 7L);
+		int shootX = (int) ((time * 0.12) % this.width) + (shootSeed * 97);
+		int shootY = (int) ((time * 0.07) % this.height) + (shootSeed * 53);
+		if (shootX < this.width && shootY < this.height) {
+			int len = 24;
+			int fade = (int) ((time % 4000L) / 4000.0 * 200);
+			int a = 255 - fade;
+			if (a > 40) {
+				for (int i = 0; i < len; i++) {
+					int px = shootX - i;
+					int py = shootY - i / 2;
+					if (px >= 0 && py >= 0) {
+						int starAlpha = a - (i * 200 / len);
+						if (starAlpha > 0) {
+							this.drawRect(px, py, px + 1, py + 1, (starAlpha << 24) | 0xFFFFFF);
+						}
+					}
 				}
 			}
 		}
@@ -522,7 +555,7 @@ public abstract class GuiScreen extends Gui implements GuiYesNoCallback {
 
 	/**
 	 * Replaces the vanilla world/options background with the GhostClient space
-	 * background on every menu screen.
+	 * background on menu screens. In-game GUIs override this to stay transparent.
 	 */
 	public void drawWorldBackground(int tint) {
 		this.drawGhostClientBackground();

@@ -134,7 +134,7 @@ public class EarlyLoadScreen {
 		_wglBindTexture(GL_TEXTURE_2D, finalTexture);
 		
 		_wglViewport(0, 0, width, height);
-		_wglClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		_wglClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		_wglClear(GL_COLOR_BUFFER_BIT);
 		
 		_wglUniform2f(_wglGetUniformLocation(program, "aspect"), x, y);

@@ -18,12 +18,16 @@ public class KillAura extends Module {
 
     private final NumberValue range = new NumberValue("Range", "Attack range", 4.5, 1.0, 6.0, 0.1);
     private final NumberValue aps = new NumberValue("APS", "Attacks per second", 10, 1, 20, 1);
+    private final NumberValue fov = new NumberValue("FOV", "Attack field of view", 180, 1, 180, 1);
+    private final ghostclient.setting.BooleanValue playersOnly = new ghostclient.setting.BooleanValue("PlayersOnly", "Only attack players", true);
     private int ticksSinceAttack = 0;
 
     public KillAura() {
         super(Category.Combat, "KillAura", "Automatically attacks nearby entities.");
         addSetting(range);
         addSetting(aps);
+        addSetting(fov);
+        addSetting(playersOnly);
     }
 
     @EventHandler
@@ -49,13 +53,24 @@ public class KillAura extends Module {
             if (entity == mc.player) continue;
             if (!entity.isEntityAlive()) continue;
             if (!(entity instanceof EntityLivingBase)) continue;
+            if (playersOnly.getValue() && !(entity instanceof EntityPlayer)) continue;
             double dist = mc.player.getDistanceToEntity(entity);
             if (dist > range.getValue()) continue;
+            if (!isInFOV(entity)) continue;
             if (dist < bestRange) {
                 bestRange = dist;
                 target = entity;
             }
         }
         return target;
+    }
+
+    private boolean isInFOV(Entity entity) {
+        double dx = entity.posX - mc.player.posX;
+        double dz = entity.posZ - mc.player.posZ;
+        double angle = Math.toDegrees(Math.atan2(dz, dx)) - mc.player.rotationYaw;
+        while (angle < -180) angle += 360;
+        while (angle > 180) angle -= 360;
+        return Math.abs(angle) <= fov.getValue() / 2.0;
     }
 }

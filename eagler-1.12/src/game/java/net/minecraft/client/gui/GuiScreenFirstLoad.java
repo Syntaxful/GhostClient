@@ -1,53 +1,48 @@
 package net.minecraft.client.gui;
 
+import java.io.IOException;
+
 import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.GameSettings;
 
 public class GuiScreenFirstLoad extends GuiScreen {
-	private final GameSettings gameSettings;
 
-	public GuiScreenFirstLoad(GameSettings settings) {
-		this.gameSettings = settings;
+	private final GuiScreen mainMenu;
+
+	public GuiScreenFirstLoad(GuiScreen mainMenu) {
+		this.mainMenu = mainMenu;
 	}
 
-	@Override
+	/**
+	 * Adds the buttons (and other controls) to the screen in question.
+	 */
 	public void initGui() {
 		this.buttonList.clear();
-		this.buttonList.add(
-				new GuiButton(0, this.width / 2 - 100, this.height / 2 + 30, I18n.format("gui.firstload.confirm")));
+		this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 2 + 40, 200, 20,
+				I18n.format("gui.continue")));
 	}
 
-	@Override
+	/**
+	 * Draws the screen and all the components in it.
+	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-		this.drawDefaultBackground();
+		this.drawGhostClientBackground();
 
-		String title = I18n.format("gui.firstload.title");
-		this.drawCenteredString(this.fontRendererObj, title, this.width / 2, 70, 0xFF0000);
-
-		String message = I18n.format("gui.firstload.message");
-		String[] lines = message.replace("\\n", "\n").split("\n");
-
-		int lineY = 90;
-		for (String line : lines) {
-			this.drawCenteredString(this.fontRendererObj, line, this.width / 2, lineY, 0xAAAAAA);
-			lineY += 12;
-		}
+		int cx = this.width / 2;
+		int cy = this.height / 2;
+		drawCenteredString(this.fontRendererObj, "GhostClient", cx, cy - 30, 0xFFFFFFFF);
+		drawCenteredString(this.fontRendererObj, "made by Syntaxful", cx, cy - 10, 0xFFAAAAAA);
+		drawCenteredString(this.fontRendererObj, "Welcome to the client.", cx, cy + 10, 0xFFCCCCCC);
 
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 
-	@Override
-	protected void actionPerformed(GuiButton button) {
+	protected void actionPerformed(GuiButton button) throws IOException {
 		if (button.id == 0) {
-			this.gameSettings.hasSeenFirstLoad = true;
-			this.gameSettings.saveOptions();
-
-			this.mc.displayGuiScreen(new GuiMainMenu());
+			this.mc.displayGuiScreen(this.mainMenu);
 		}
 	}
 
-	@Override
 	public boolean doesGuiPauseGame() {
-		return true;
+		return false;
 	}
 }

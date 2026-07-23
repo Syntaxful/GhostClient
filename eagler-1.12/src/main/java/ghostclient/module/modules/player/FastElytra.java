@@ -10,10 +10,10 @@ import net.minecraft.item.ItemStack;
 /**
  * Swaps chestplate with elytra on keypress.
  */
-public class ChestSwap extends Module {
+public class FastElytra extends Module {
 
-    public ChestSwap() {
-        super(Category.Player, "ChestSwap", "Swap chestplate with elytra.");
+    public FastElytra() {
+        super(Category.Player, "FastElytra", "Swap chestplate with elytra.");
     }
 
     @EventHandler

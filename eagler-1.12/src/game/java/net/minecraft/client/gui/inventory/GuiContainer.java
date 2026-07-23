@@ -7,6 +7,7 @@ import java.util.Set;
 import net.lax1dude.eaglercraft.Keyboard;
 import net.lax1dude.eaglercraft.opengl.GlStateManager;
 import net.minecraft.client.Minecraft;
+import ghostclient.util.RenderUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -98,6 +99,8 @@ public abstract class GuiContainer extends GuiScreen {
 	 * Draws the screen and all the components in it.
 	 */
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		// GhostClient: translucent overlay so the world stays visible behind containers
+		RenderUtils.drawRect(0, 0, this.width, this.height, 0x44000000);
 		int i = this.guiLeft;
 		int j = this.guiTop;
 		this.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);

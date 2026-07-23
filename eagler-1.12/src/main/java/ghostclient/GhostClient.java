@@ -11,7 +11,7 @@ import ghostclient.module.ModuleManager;
 import ghostclient.module.modules.combat.AimAssist;
 import ghostclient.module.modules.combat.AutoLog;
 import ghostclient.module.modules.combat.AutoArmor;
-import ghostclient.module.modules.combat.AutoCity;
+import ghostclient.module.modules.combat.AutoSpleef;
 import ghostclient.module.modules.combat.AutoClicker;
 import ghostclient.module.modules.combat.AutoSword;
 import ghostclient.module.modules.combat.AutoTotem;
@@ -28,12 +28,10 @@ import ghostclient.module.modules.combat.WTap;
 import ghostclient.module.modules.misc.AntiPacketKick;
 import ghostclient.module.modules.misc.NoAnimations;
 import ghostclient.module.modules.misc.AutoCraft;
-import ghostclient.module.modules.misc.AutoReconnect;
 import ghostclient.module.modules.misc.AutoRespawn;
 import ghostclient.module.modules.misc.BetterChat;
 import ghostclient.module.modules.misc.FakePlayer;
 import ghostclient.module.modules.misc.NameProtect;
-import ghostclient.module.modules.misc.Notebot;
 import ghostclient.module.modules.misc.PacketCanceller;
 import ghostclient.module.modules.misc.Panic;
 import ghostclient.module.modules.misc.Spammer;
@@ -49,7 +47,7 @@ import ghostclient.module.modules.movement.FastClimb;
 import ghostclient.module.modules.movement.Fly;
 import ghostclient.module.modules.movement.HighJump;
 import ghostclient.module.modules.movement.IceSpeed;
-import ghostclient.module.modules.movement.Jesus;
+import ghostclient.module.modules.movement.WaterWalker;
 import ghostclient.module.modules.movement.LongJump;
 import ghostclient.module.modules.movement.NoSlow;
 import ghostclient.module.modules.movement.Parkour;
@@ -64,12 +62,8 @@ import ghostclient.module.modules.player.AntiHunger;
 import ghostclient.module.modules.player.AutoEat;
 import ghostclient.module.modules.player.AutoFish;
 import ghostclient.module.modules.player.AutoTool;
-import ghostclient.module.modules.player.ChestSwap;
-import ghostclient.module.modules.player.FastUse;
-import ghostclient.module.modules.player.InventoryMove;
+import ghostclient.module.modules.player.FastElytra;
 import ghostclient.module.modules.player.NoFall;
-import ghostclient.module.modules.player.NoRotate;
-import ghostclient.module.modules.player.PotionSpoof;
 import ghostclient.module.modules.player.Reach;
 import ghostclient.module.modules.player.SilentMine;
 import ghostclient.module.modules.player.SpeedMine;
@@ -77,7 +71,6 @@ import ghostclient.module.modules.render.AntiBlind;
 import ghostclient.module.modules.render.Armour;
 import ghostclient.module.modules.render.BlockSelection;
 import ghostclient.module.modules.render.CPS;
-import ghostclient.module.modules.render.BossStack;
 import ghostclient.module.modules.render.Breadcrumbs;
 import ghostclient.module.modules.render.CameraClip;
 import ghostclient.module.modules.render.ChestESP;
@@ -160,7 +153,7 @@ public class GhostClient {
         MODULES.register(new AimAssist());
         MODULES.register(new AutoLog());
         MODULES.register(new AutoArmor());
-        MODULES.register(new AutoCity());
+        MODULES.register(new AutoSpleef());
         MODULES.register(new AutoClicker());
         MODULES.register(new AutoSword());
         MODULES.register(new AutoTotem());
@@ -187,7 +180,7 @@ public class GhostClient {
         MODULES.register(new Fly());
         MODULES.register(new HighJump());
         MODULES.register(new IceSpeed());
-        MODULES.register(new Jesus());
+        MODULES.register(new WaterWalker());
         MODULES.register(new LongJump());
         MODULES.register(new NoSlow());
         MODULES.register(new Parkour());
@@ -198,18 +191,14 @@ public class GhostClient {
         MODULES.register(new Step());
         MODULES.register(new Timer());
 
-        // Player (14)
+        // Player (10)
         MODULES.register(new AntiAFK());
         MODULES.register(new AntiHunger());
         MODULES.register(new AutoEat());
         MODULES.register(new AutoFish());
         MODULES.register(new AutoTool());
-        MODULES.register(new ChestSwap());
-        MODULES.register(new FastUse());
-        MODULES.register(new InventoryMove());
+        MODULES.register(new FastElytra());
         MODULES.register(new NoFall());
-        MODULES.register(new NoRotate());
-        MODULES.register(new PotionSpoof());
         MODULES.register(new Reach());
         MODULES.register(new SilentMine());
         MODULES.register(new SpeedMine());
@@ -220,9 +209,8 @@ public class GhostClient {
         MODULES.register(new Nuker());
         MODULES.register(new Scaffold());
 
-        // Render (32)
+        // Render (31)
         MODULES.register(new BlockSelection());
-        MODULES.register(new BossStack());
         MODULES.register(new Breadcrumbs());
         MODULES.register(new CameraClip());
         MODULES.register(new ChestESP());
@@ -261,17 +249,15 @@ public class GhostClient {
         MODULES.register(new XRay());
         MODULES.register(new Zoom());
 
-        // Misc (13)
+        // Misc (11)
         MODULES.register(new ghostclient.module.modules.misc.ClickGUIModule());
         MODULES.register(new AntiPacketKick());
         MODULES.register(new AutoCraft());
         MODULES.register(new NoAnimations());
-        MODULES.register(new AutoReconnect());
         MODULES.register(new AutoRespawn());
         MODULES.register(new BetterChat());
         MODULES.register(new FakePlayer());
         MODULES.register(new NameProtect());
-        MODULES.register(new Notebot());
         MODULES.register(new PacketCanceller());
         MODULES.register(new Panic());
         MODULES.register(new Spammer());

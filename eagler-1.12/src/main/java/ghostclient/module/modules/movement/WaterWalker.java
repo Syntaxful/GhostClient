@@ -8,10 +8,10 @@ import ghostclient.module.Module;
 /**
  * Walk on water.
  */
-public class Jesus extends Module {
+public class WaterWalker extends Module {
 
-    public Jesus() {
-        super(Category.Movement, "Jesus", "Walk on water.");
+    public WaterWalker() {
+        super(Category.Movement, "WaterWalker", "Walk on water.");
     }
 
     @EventHandler
