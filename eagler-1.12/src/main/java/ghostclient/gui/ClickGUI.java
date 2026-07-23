@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.input.Keyboard;
+import net.lax1dude.eaglercraft.Keyboard;
 
 import ghostclient.GhostClient;
+import ghostclient.config.ConfigManager;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
 import ghostclient.setting.BooleanValue;
@@ -29,6 +30,8 @@ import net.minecraft.client.gui.ScaledResolution;
 public class ClickGUI extends GuiScreen {
 
     private static Category selectedCategory = Category.Combat;
+    private static String backgroundMode = "None";
+    private static final String[] BACKGROUND_MODES = { "None", "Stars", "Warp" };
     private String searchQuery = "";
     private Module expandedModule = null;
     private Module bindingModule = null;
@@ -50,6 +53,30 @@ public class ClickGUI extends GuiScreen {
     private final int COL_DARK_GRAY = 0xFF666666;
     private final int COL_ACTIVE = 0xFFFFFFFF;
     private final int COL_INACTIVE = 0xFF555555;
+
+    public static Category getSelectedCategory() {
+        return selectedCategory;
+    }
+
+    public static void setSelectedCategory(Category category) {
+        selectedCategory = category;
+        ConfigManager.save();
+    }
+
+    public static String getBackgroundMode() {
+        return backgroundMode;
+    }
+
+    public static void setBackgroundMode(String mode) {
+        for (String m : BACKGROUND_MODES) {
+            if (m.equalsIgnoreCase(mode)) {
+                backgroundMode = m;
+                ConfigManager.save();
+                return;
+            }
+        }
+        backgroundMode = "None";
+    }
 
     private static final String[][] KEYBOARD_ROWS = {
         { "ESC", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12" },
@@ -73,8 +100,8 @@ public class ClickGUI extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        // In-game GUI: no full-screen background, only the panel draws its own dark surface
-        // (see panel background drawn below)
+        // Draw animated space background behind the panel (or none if set to None)
+        BackgroundRenderer.draw(backgroundMode, this.width, this.height);
 
         drawPanel(mouseX, mouseY, partialTicks);
 
@@ -95,9 +122,18 @@ public class ClickGUI extends GuiScreen {
         drawString(fontRendererObj, "GhostClient", panelX + 12, panelY + 10, COL_WHITE);
         drawString(fontRendererObj, "made by Syntaxful", panelX + panelW - 110, panelY + 10, COL_GRAY);
 
+        // Background mode button
+        int bgW = 60;
+        int bgH = 18;
+        int bgX = panelX + panelW - 140 - bgW - 12;
+        int bgY = panelY + 5;
+        RenderUtils.drawRect(bgX, bgY, bgW, bgH, COL_BG);
+        RenderUtils.drawBorderedRect(bgX + 1, bgY + 1, bgW - 2, bgH - 2, COL_BG, COL_BORDER, 1);
+        drawCenteredString(fontRendererObj, "BG: " + backgroundMode, bgX + bgW / 2, bgY + 5, COL_WHITE);
+
         // Search bar
-        int searchW = 140;
-        int searchX = panelX + panelW - searchW - 16;
+        int searchW = 120;
+        int searchX = panelX + panelW - searchW - 10;
         int searchY = panelY + 5;
         RenderUtils.drawRect(searchX, searchY, searchW, 18, COL_BG);
         RenderUtils.drawBorderedRect(searchX + 1, searchY + 1, searchW - 2, 16, COL_BG, COL_BORDER, 1);
@@ -281,6 +317,17 @@ public class ClickGUI extends GuiScreen {
         }
     }
 
+    private void cycleBackgroundMode() {
+        int index = 0;
+        for (int i = 0; i < BACKGROUND_MODES.length; i++) {
+            if (BACKGROUND_MODES[i].equals(backgroundMode)) {
+                index = i;
+                break;
+            }
+        }
+        setBackgroundMode(BACKGROUND_MODES[(index + 1) % BACKGROUND_MODES.length]);
+    }
+
     private List<Module> getVisibleModules() {
         List<Module> all = GhostClient.MODULES.getByCategory(selectedCategory);
         if (searchQuery.isEmpty()) return all;
@@ -306,11 +353,21 @@ public class ClickGUI extends GuiScreen {
             return;
         }
 
-        int searchW = 140;
-        int searchX = panelX + panelW - searchW - 16;
+        int searchW = 120;
+        int searchX = panelX + panelW - searchW - 10;
         int searchY = panelY + 5;
         if (mouseX >= searchX && mouseX <= searchX + searchW && mouseY >= searchY && mouseY <= searchY + 18) {
             searchQuery = "";
+            return;
+        }
+
+        // Background mode button
+        int bgW = 60;
+        int bgH = 18;
+        int bgX = panelX + panelW - 140 - bgW - 12;
+        int bgY = panelY + 5;
+        if (mouseX >= bgX && mouseX <= bgX + bgW && mouseY >= bgY && mouseY <= bgY + bgH) {
+            cycleBackgroundMode();
             return;
         }
 
@@ -322,7 +379,7 @@ public class ClickGUI extends GuiScreen {
         for (int i = 0; i < cats.length; i++) {
             int tx = tabX + i * tabW;
             if (mouseX >= tx && mouseX <= tx + tabW - 2 && mouseY >= tabY && mouseY <= tabY + tabH) {
-                selectedCategory = cats[i];
+                setSelectedCategory(cats[i]);
                 expandedModule = null;
                 return;
             }

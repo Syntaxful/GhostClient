@@ -45,6 +45,10 @@ public class EarlyLoadScreen {
 
 	private static ITextureGL finalTexture = null;
 
+	private static final String loadScreen = "";
+	private static final String pressDeleteText = "";
+	private static final String enableScreen = "";
+
 	public static void paintScreen(int glesVers, boolean vaos) {
 		boolean gles3 = glesVers >= 300;
 		

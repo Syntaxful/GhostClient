@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import ghostclient.GhostClient;
+import ghostclient.gui.ClickGUI;
+import ghostclient.module.Category;
 import ghostclient.module.Module;
 import ghostclient.setting.BooleanValue;
 import ghostclient.setting.ModeValue;
@@ -39,6 +41,11 @@ public class ConfigManager {
             }
             root.put("modules", modules);
             root.put("version", GhostClient.VERSION);
+
+            JSONObject clickgui = new JSONObject();
+            clickgui.put("selectedCategory", ClickGUI.getSelectedCategory().name());
+            clickgui.put("background", ClickGUI.getBackgroundMode());
+            root.put("clickgui", clickgui);
 
             byte[] data = root.toString().getBytes(StandardCharsets.UTF_8);
             EagRuntime.setStorage(CONFIG_KEY, data);
@@ -78,6 +85,16 @@ public class ConfigManager {
                     }
                 }
             }
+            JSONObject clickgui = root.optJSONObject("clickgui");
+            if (clickgui != null) {
+                String catName = clickgui.optString("selectedCategory", Category.Combat.name());
+                try {
+                    ClickGUI.setSelectedCategory(Category.valueOf(catName));
+                } catch (Exception ignored) {
+                }
+                ClickGUI.setBackgroundMode(clickgui.optString("background", "None"));
+            }
+
             System.out.println("[GhostClient] Config loaded.");
         } catch (Throwable t) {
             System.err.println("[GhostClient] Failed to load config: " + t.getMessage());

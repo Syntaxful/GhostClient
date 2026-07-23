@@ -355,6 +355,18 @@ public class KeyboardConstants {
 		}
 	}
 
+	public static int getKeyIndex(String name) {
+		if (name == null || name.isEmpty()) {
+			return 0;
+		}
+		for (int i = 0; i < 256; i++) {
+			if (keyboardNames[i] != null && keyboardNames[i].equalsIgnoreCase(name)) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
 	public static int getEaglerKeyFromGLFW(int key) {
 		if (key < 0 || key >= 384) {
 			return 0;

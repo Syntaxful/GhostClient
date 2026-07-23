@@ -4,6 +4,7 @@ import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
 import ghostclient.module.Module;
+import ghostclient.setting.NumberValue;
 
 /**
  * Fly while riding a boat.

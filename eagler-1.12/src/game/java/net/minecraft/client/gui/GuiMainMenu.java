@@ -21,18 +21,21 @@ import net.lax1dude.eaglercraft.EagRuntime;
 import net.lax1dude.eaglercraft.HString;
 import net.lax1dude.eaglercraft.Keyboard;
 import net.lax1dude.eaglercraft.Mouse;
-import net.lax1dude.eaglercraft.ServerQueryDispatch;
+import net.lax1dude.eaglercraft.socket.ServerQueryDispatch;
 import net.lax1dude.eaglercraft.minecraft.GuiButtonWithStupidIcons;
 import net.lax1dude.eaglercraft.notifications.GuiButtonNotifBell;
 import net.lax1dude.eaglercraft.notifications.GuiScreenNotifications;
 import net.lax1dude.eaglercraft.opengl.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.realms.RealmsBridge;
-import net.minecraft.util.EnumChatType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SessionUtils;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.GameType;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.WorldType;
+import net.minecraft.world.storage.ISaveFormat;
+import net.minecraft.world.storage.WorldInfo;
 import net.minecraft.util.text.TextComponentString;
 
 public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
@@ -146,7 +149,6 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 	public void initGui() {
 		this.buttonList.clear();
 		Keyboard.enableRepeatEvents(true);
-		this.mc.gameSettings.enableServerRegistry = false;
 		this.openGLWarning2 = "";
 
 		int centerX = this.width / 2;
@@ -166,8 +168,8 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 		this.buttonList.add(new GuiButton(4, centerX - buttonWidth / 2, centerY + (buttonHeight + gap) * 4, buttonWidth,
 				buttonHeight, I18n.format("menu.quit")));
 
-		this.buttonList.add(new GuiButtonWithStupidIcons(20, this.width - 24, 4, 20, 20, 0));
-		this.buttonList.add(new GuiButtonNotifBell(21, this.width - 48, 4, 20, 20));
+		this.buttonList.add(new GuiButtonWithStupidIcons(20, this.width - 24, 4, 20, 20, ""));
+		this.buttonList.add(new GuiButtonNotifBell(21, this.width - 48, 4));
 	}
 
 	private void addSingleplayerMultiplayerButtons(int p_73969_1_, int p_73969_2_) {
@@ -212,12 +214,12 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 		}
 
 		if (button.id == 6) {
-			this.mc.displayGuiScreen(new net.minecraftforge.fml.client.GuiModList(this));
+			// Mod list is not available in this build.
 		}
 
 		if (button.id == 11) {
 			this.mc.launchIntegratedServer("Demo_World", "Demo_World", new WorldSettings(new Random().nextLong(),
-				GameType.SURVIVAL, false, true, WorldType.DEFAULT), false);
+				GameType.SURVIVAL, false, true, WorldType.DEFAULT));
 		}
 
 		if (button.id == 12) {
@@ -255,8 +257,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 	}
 
 	private void switchToRealms() {
-		RealmsBridge realmsbridge = new RealmsBridge();
-		realmsbridge.switchToRealms(this);
+		// Realms integration is not available in this build.
 	}
 
 	/**
@@ -322,6 +323,5 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
 	public void onGuiClosed() {
 		Keyboard.enableRepeatEvents(false);
-		this.mc.gameSettings.enableServerRegistry = true;
 	}
 }
