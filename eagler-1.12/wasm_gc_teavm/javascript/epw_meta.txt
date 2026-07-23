@@ -1,0 +1,8 @@
+client-version-integer=0
+client-package-name=net.lax1dude.eaglercraft.v1_8.client
+client-origin-name=GhostClient
+client-origin-version=1.12
+client-origin-vendor=Syntaxful
+client-fork-name=GhostClient
+client-fork-version=1.12
+client-fork-vendor=Syntaxful
