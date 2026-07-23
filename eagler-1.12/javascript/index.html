@@ -12,9 +12,24 @@
 		<meta property="og:description" content="GhostClient for Eaglercraft 1.12.2">
 		<link type="image/png" rel="shortcut icon" href="favicon.png">
 		<script type="text/javascript" src="classes.js"></script>
+		<style>
+			@keyframes gc-float {
+				0%, 100% { transform: translateY(0) translateX(0); opacity: 0.15; }
+				50% { transform: translateY(-20px) translateX(10px); opacity: 0.35; }
+			}
+			@keyframes gc-pulse {
+				0%, 100% { opacity: 0.2; }
+				50% { opacity: 0.4; }
+			}
+			@keyframes gc-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+		</style>
 		<script type="text/javascript">
 			"use strict";
 			window.addEventListener("load", function() {
+				var totalSeconds = 5;
+				var remaining = totalSeconds;
+				var glitching = false;
+
 				var splash = document.createElement("div");
 				splash.id = "_gc_splash";
 				// FIX: position:fixed takes the splash OUT of normal document flow,
@@ -35,17 +50,173 @@
 				splash.style.backgroundColor = "#000000";
 				splash.style.color = "#FFFFFF";
 				splash.style.fontFamily = "sans-serif";
-				splash.innerHTML = "<h1 style='margin:0;font-size:48px;letter-spacing:2px;'>GhostClient</h1><p style='margin:8px 0 24px;color:#AAAAAA;'>made by Syntaxful</p><div style='width:40px;height:40px;border:3px solid #333;border-top:3px solid #FFF;border-radius:50%;animation:spin 1s linear infinite;'></div><p id='_gc_status' style='margin-top:24px;color:#AAAAAA;font-size:14px;'>Loading...</p>";
-				document.body.appendChild(splash);
+				splash.style.overflow = "hidden";
+				splash.style.userSelect = "none";
 
-				var spin = document.createElement("style");
-				spin.innerHTML = "@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}";
-				document.head.appendChild(spin);
+				// Background layers
+				var bg1 = document.createElement("div");
+				bg1.style.position = "absolute";
+				bg1.style.inset = "0";
+				bg1.style.opacity = "0.3";
+				bg1.style.background = "radial-gradient(circle at 50% 50%, #1a1a2e 0%, #000000 60%)";
+				splash.appendChild(bg1);
+
+				var bg2 = document.createElement("div");
+				bg2.style.position = "absolute";
+				bg2.style.inset = "0";
+				bg2.style.opacity = "0.2";
+				bg2.style.animation = "gc-pulse 4s ease-in-out infinite";
+				bg2.style.background = "radial-gradient(circle at 30% 70%, #16213e 0%, transparent 50%), radial-gradient(circle at 70% 30%, #0f3460 0%, transparent 50%)";
+				splash.appendChild(bg2);
+
+				// Floating particles
+				for (var i = 0; i < 12; i++) {
+					var p = document.createElement("div");
+					p.style.position = "absolute";
+					p.style.borderRadius = "50%";
+					p.style.backgroundColor = "rgba(255,255,255,0.1)";
+					p.style.filter = "blur(2px)";
+					p.style.width = (6 + (i % 5) * 3) + "px";
+					p.style.height = (6 + (i % 5) * 3) + "px";
+					p.style.left = (10 + (i * 7.5) % 80) + "%";
+					p.style.top = (20 + (i * 13) % 60) + "%";
+					p.style.animation = "gc-float " + (4 + (i % 4)) + "s ease-in-out infinite";
+					p.style.animationDelay = (i * 0.3) + "s";
+					splash.appendChild(p);
+				}
+
+				// Content wrapper
+				var content = document.createElement("div");
+				content.style.position = "relative";
+				content.style.zIndex = "10";
+				content.style.display = "flex";
+				content.style.flexDirection = "column";
+				content.style.alignItems = "center";
+				splash.appendChild(content);
+
+				var title = document.createElement("h1");
+				title.id = "_gc_title";
+				title.textContent = "GhostClient";
+				title.style.margin = "0";
+				title.style.fontSize = "clamp(48px, 10vw, 96px)";
+				title.style.fontWeight = "900";
+				title.style.letterSpacing = "-0.04em";
+				title.style.color = "#FFFFFF";
+				title.style.textShadow = "0 0 40px rgba(100,149,237,0.4)";
+				title.style.transition = "transform 0.1s, color 0.1s";
+				content.appendChild(title);
+
+				var byline = document.createElement("p");
+				byline.textContent = "by Syntaxful";
+				byline.style.margin = "8px 0 48px";
+				byline.style.color = "#6b7280";
+				byline.style.fontSize = "14px";
+				byline.style.letterSpacing = "0.3em";
+				byline.style.textTransform = "uppercase";
+				content.appendChild(byline);
+
+				// Countdown ring container
+				var ringWrap = document.createElement("div");
+				ringWrap.style.position = "relative";
+				ringWrap.style.width = "clamp(120px, 20vw, 160px)";
+				ringWrap.style.height = "clamp(120px, 20vw, 160px)";
+				ringWrap.style.marginBottom = "40px";
+				content.appendChild(ringWrap);
+
+				var ringSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+				ringSvg.setAttribute("viewBox", "0 0 100 100");
+				ringSvg.style.width = "100%";
+				ringSvg.style.height = "100%";
+				ringSvg.style.transform = "rotate(-90deg)";
+				ringWrap.appendChild(ringSvg);
+
+				var r = 45;
+				var circumference = 2 * Math.PI * r;
+
+				var track = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+				track.setAttribute("cx", "50");
+				track.setAttribute("cy", "50");
+				track.setAttribute("r", r);
+				track.setAttribute("fill", "none");
+				track.setAttribute("stroke", "#1f2937");
+				track.setAttribute("stroke-width", "6");
+				ringSvg.appendChild(track);
+
+				var progress = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+				progress.id = "_gc_ring";
+				progress.setAttribute("cx", "50");
+				progress.setAttribute("cy", "50");
+				progress.setAttribute("r", r);
+				progress.setAttribute("fill", "none");
+				progress.setAttribute("stroke", "#60a5fa");
+				progress.setAttribute("stroke-width", "6");
+				progress.setAttribute("stroke-linecap", "round");
+				progress.setAttribute("stroke-dasharray", circumference);
+				progress.setAttribute("stroke-dashoffset", "0");
+				progress.style.filter = "drop-shadow(0 0 8px rgba(96,165,250,0.6))";
+				progress.style.transition = "stroke-dashoffset 1s linear";
+				ringSvg.appendChild(progress);
+
+				var countText = document.createElement("div");
+				countText.id = "_gc_count";
+				countText.textContent = remaining;
+				countText.style.position = "absolute";
+				countText.style.inset = "0";
+				countText.style.display = "flex";
+				countText.style.alignItems = "center";
+				countText.style.justifyContent = "center";
+				countText.style.fontSize = "clamp(36px, 6vw, 56px)";
+				countText.style.fontWeight = "700";
+				countText.style.color = "#FFFFFF";
+				countText.style.textShadow = "0 0 20px rgba(96,165,250,0.5)";
+				countText.style.fontVariantNumeric = "tabular-nums";
+				ringWrap.appendChild(countText);
+
+				var status = document.createElement("p");
+				status.id = "_gc_status";
+				status.textContent = "Loading assets...";
+				status.style.margin = "0";
+				status.style.color = "#9ca3af";
+				status.style.fontSize = "14px";
+				status.style.letterSpacing = "0.05em";
+				status.style.minHeight = "20px";
+				content.appendChild(status);
+
+				document.body.appendChild(splash);
 
 				function setStatus(text) {
 					var s = document.getElementById("_gc_status");
 					if (s) s.textContent = text;
 				}
+
+				function updateRing() {
+					var ring = document.getElementById("_gc_ring");
+					var num = document.getElementById("_gc_count");
+					var titleEl = document.getElementById("_gc_title");
+					if (ring) {
+						var offset = circumference * (1 - remaining / totalSeconds);
+						ring.setAttribute("stroke-dashoffset", offset);
+					}
+					if (num) num.textContent = remaining;
+					if (titleEl) {
+						glitching = true;
+						titleEl.style.transform = "translateX(2px) skewX(6deg)";
+						titleEl.style.color = "#f87171";
+						setTimeout(function() {
+							titleEl.style.transform = "translateX(0) skewX(0deg)";
+							titleEl.style.color = "#FFFFFF";
+							glitching = false;
+						}, 120);
+					}
+				}
+
+				var statusMessages = [
+					"Loading assets...",
+					"Initializing WebGL...",
+					"Mounting worlds database...",
+					"Starting GhostClient...",
+					"Ready"
+				];
 
 				var relayId = Math.floor(Math.random() * 3);
 				window.eaglercraftXOpts = {
@@ -57,17 +228,38 @@
 					logInvalidCerts: true,
 					crashOnUncaughtExceptions: true
 				};
-				setStatus("Starting GhostClient...");
+
+				setStatus("Loading assets...");
+				updateRing();
+
 				try {
 					main();
-					setTimeout(function() {
-						var s = document.getElementById("_gc_splash");
-						if (s) s.parentNode.removeChild(s);
-					}, 1500);
 				} catch (ex) {
 					setStatus("Failed to start: " + ex.message);
 					console.error(ex);
+					return;
 				}
+
+				var timer = setInterval(function() {
+					remaining--;
+					if (remaining < 0) {
+						clearInterval(timer);
+						setStatus("Ready");
+						setTimeout(function() {
+							var s = document.getElementById("_gc_splash");
+							if (s) {
+								s.style.transition = "opacity 0.6s ease";
+								s.style.opacity = "0";
+								setTimeout(function() {
+									if (s && s.parentNode) s.parentNode.removeChild(s);
+								}, 600);
+							}
+						}, 400);
+					} else {
+						setStatus(statusMessages[totalSeconds - remaining] || "Starting...");
+						updateRing();
+					}
+				}, 1000);
 			});
 		</script>
 	</head>
