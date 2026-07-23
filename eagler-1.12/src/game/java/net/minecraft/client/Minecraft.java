@@ -2344,4 +2344,8 @@ public class Minecraft implements IThreadListener {
 	public void setRightClickDelayTimer(int rightClickDelayTimer) {
 		this.rightClickDelayTimer = rightClickDelayTimer;
 	}
+
+	public void doRightClickMouse() {
+		this.rightClickMouse();
+	}
 }

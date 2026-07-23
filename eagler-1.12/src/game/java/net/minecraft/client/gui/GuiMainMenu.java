@@ -70,7 +70,7 @@ public class GuiMainMenu extends GuiScreen implements GuiYesNoCallback {
 
 		SplashTextGeneratorThread th = new SplashTextGeneratorThread("Menu Splash Thread");
 		th.setDaemon(true);
-		th.start();
+		th.run(); // run synchronously for WASM/TeaVM targets (Thread.start is unsupported)
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());

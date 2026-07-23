@@ -23,26 +23,15 @@ public class AutoFish extends Module {
         if (mc.player == null || mc.player.getHeldItemMainhand() == null || !(mc.player.getHeldItemMainhand().getItem() instanceof ItemFishingRod)) return;
         if (mc.player.fishEntity != null && mc.player.fishEntity.motionY < 0 && !pulling) {
             pulling = true;
-            rightClick();
+            mc.doRightClickMouse();
             recastTicks = 25;
         }
         if (recastTicks > 0) {
             recastTicks--;
             if (recastTicks == 0) {
-                rightClick();
+                mc.doRightClickMouse();
                 pulling = false;
             }
-        }
-    }
-
-    private void rightClick() {
-        try {
-            java.lang.reflect.Method m = mc.getClass().getDeclaredMethod("rightClickMouse");
-            m.setAccessible(true);
-            m.invoke(mc);
-        } catch (Exception e) {
-            // Fallback: use item via controller if reflection fails
-            mc.playerController.processRightClick(mc.player, mc.world, net.minecraft.util.EnumHand.MAIN_HAND);
         }
     }
 }
