@@ -1,5 +1,6 @@
 package ghostclient.module.modules.combat;
 
+import ghostclient.GhostClient;
 import ghostclient.event.EventHandler;
 import ghostclient.event.TickEvent;
 import ghostclient.module.Category;
@@ -8,12 +9,18 @@ import ghostclient.module.Module;
 /**
  * Automatically W-taps to reset sprint when hitting an entity.
  */
-public class WTap extends Module {
+public class AutoWtap extends Module {
 
     private int releaseTicks = 0;
 
-    public WTap() {
-        super(Category.Combat, "WTap", "Auto W-tap on hit.");
+    public AutoWtap() {
+        super(Category.Combat, "AutoWtap", "Auto W-tap on hit.");
+    }
+
+    @Override
+    public void onEnable() {
+        Module stap = GhostClient.MODULES.getByName("AutoStap");
+        if (stap != null && stap.isEnabled()) stap.setEnabled(false);
     }
 
     @EventHandler

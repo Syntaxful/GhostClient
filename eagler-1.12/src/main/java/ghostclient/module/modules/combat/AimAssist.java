@@ -15,7 +15,7 @@ import net.minecraft.util.math.MathHelper;
 public class AimAssist extends Module {
 
     private final NumberValue range = new NumberValue("Range", "Aim range", 4.0, 1.0, 8.0, 0.1);
-    private final NumberValue speed = new NumberValue("Speed", "Aim speed", 0.5, 0.1, 1.0, 0.05);
+    private final NumberValue speed = new NumberValue("Speed", "Aim snap strength (1.0 = slow, 10.0 = instant)", 5.0, 0.1, 20.0, 0.1);
 
     public AimAssist() {
         super(Category.Combat, "AimAssist", "Smoothly aim at nearby entities.");

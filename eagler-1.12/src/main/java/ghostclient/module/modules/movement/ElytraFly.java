@@ -11,8 +11,8 @@ import ghostclient.setting.NumberValue;
  */
 public class ElytraFly extends Module {
 
-    private final NumberValue speed = new NumberValue("Speed", "Forward speed", 1.0, 0.1, 5.0, 0.1);
-    private final NumberValue vertical = new NumberValue("Vertical", "Vertical speed", 0.5, 0.1, 2.0, 0.1);
+    private final NumberValue speed = new NumberValue("Speed", "Forward speed in blocks per second", 1.0, 0.1, 100.0, 0.1);
+    private final NumberValue vertical = new NumberValue("Vertical", "Vertical speed", 0.5, 0.1, 5.0, 0.1);
 
     public ElytraFly() {
         super(Category.Movement, "ElytraFly", "Elytra flight control.");

@@ -11,7 +11,7 @@ import ghostclient.setting.NumberValue;
  */
 public class EntitySpeed extends Module {
 
-    private final NumberValue speed = new NumberValue("Speed", "Entity speed", 2.0, 0.5, 5.0, 0.1);
+    private final NumberValue speed = new NumberValue("Speed", "Entity speed in blocks per second", 2.0, 0.1, 50.0, 0.1);
 
     public EntitySpeed() {
         super(Category.Movement, "EntitySpeed", "Speed up mounts and boats.");

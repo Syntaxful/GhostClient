@@ -11,8 +11,8 @@ import ghostclient.setting.NumberValue;
  */
 public class BoatFly extends Module {
 
-    private final NumberValue speed = new NumberValue("Speed", "Forward speed", 1.0, 0.1, 5.0, 0.1);
-    private final NumberValue vertical = new NumberValue("Vertical", "Vertical speed", 0.5, 0.1, 2.0, 0.1);
+    private final NumberValue speed = new NumberValue("Speed", "Forward speed in blocks per second", 1.0, 0.1, 50.0, 0.1);
+    private final NumberValue vertical = new NumberValue("Vertical", "Vertical speed", 0.5, 0.1, 5.0, 0.1);
 
     public BoatFly() {
         super(Category.Movement, "BoatFly", "Fly while in a boat.");

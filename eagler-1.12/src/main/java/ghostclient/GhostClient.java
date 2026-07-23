@@ -24,7 +24,7 @@ import ghostclient.module.modules.combat.Offhand;
 import ghostclient.module.modules.combat.Surround;
 import ghostclient.module.modules.combat.TriggerBot;
 import ghostclient.module.modules.combat.Velocity;
-import ghostclient.module.modules.combat.WTap;
+import ghostclient.module.modules.combat.AutoWtap;
 import ghostclient.module.modules.misc.AntiPacketKick;
 import ghostclient.module.modules.misc.NoAnimations;
 import ghostclient.module.modules.misc.AutoCraft;
@@ -166,7 +166,7 @@ public class GhostClient {
         MODULES.register(new Surround());
         MODULES.register(new TriggerBot());
         MODULES.register(new Velocity());
-        MODULES.register(new WTap());
+        MODULES.register(new AutoWtap());
 
         // Movement (20)
         MODULES.register(new AirJump());
