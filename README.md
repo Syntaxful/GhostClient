@@ -5,6 +5,7 @@ A performance-first, utility, and combat client for **Eaglercraft 1.12.2** — t
 Built directly on top of the Eaglercraft 1.12.2 source.
 
 **Maintained by Syntaxful.**
+
 <img width="224" height="224" alt="a6b06022-f3d6-446b-9e96-f98b85455b20" src="https://github.com/user-attachments/assets/a3d4dc0b-89de-4d74-8976-d724bd22c563" />
 
 ---
